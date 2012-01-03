@@ -8,6 +8,11 @@
       <h2>
         <a href="#overview">Overview</a>
       </h2>
+      <ul>
+        <li>
+          <a href="#overview-github">Github Pages</a>
+        </li>
+      </ul>
       <h2>
         <a href="#project">Project Structure</a>
       </h2>
@@ -39,16 +44,16 @@
       </h2>
       <ul>
         <li>
-          <a href="#static-file">file</a>
+          <a href="#static-file">file </a>
         </li>
         <li>
-          <a href="#static-helper">helper</a>
+          <a href="#static-helper">helper </a>
         </li>
         <li>
-          <a href="#static-path">path</a>
+          <a href="#static-path">path </a>
         </li>
         <li>
-          <a href="#static-package">package</a>
+          <a href="#static-package">package </a>
         </li>
       </ul>
       <h2>
@@ -56,19 +61,19 @@
       </h2>
       <ul>
         <li>
-          <a href="#file-write">write</a>
+          <a href="#file-write">write </a>
         </li>
         <li>
-          <a href="#file-$">$</a>
+          <a href="#file-$">$ </a>
         </li>
         <li>
-          <a href="#file-set">set</a>
+          <a href="#file-set">set </a>
         </li>
         <li>
-          <a href="#file-transform">transform</a>
+          <a href="#file-transform">transform </a>
         </li>
         <li>
-          <a href="#file-changeextensionto">changeExtensionTo</a>
+          <a href="#file-changeextensionto">changeExtensionTo </a>
         </li>
       </ul>
       <h2>
@@ -76,25 +81,25 @@
       </h2>
       <ul>
         <li>
-          <a href="#helpers-live-reload">live-reload</a>
+          <a href="#helpers-live-reload">live-reload </a>
         </li>
         <li>
-          <a href="#helpers-set">set</a>
+          <a href="#helpers-set">set </a>
         </li>
         <li>
-          <a href="#helpers-include">include</a>
+          <a href="#helpers-include">include </a>
         </li>
         <li>
-          <a href="#helpers-styles">styles</a>
+          <a href="#helpers-styles">styles </a>
         </li>
         <li>
-          <a href="#helpers-style">style</a>
+          <a href="#helpers-style">style </a>
         </li>
         <li>
-          <a href="#helpers-scripts">scripts</a>
+          <a href="#helpers-scripts">scripts </a>
         </li>
         <li>
-          <a href="#helpers-script">script</a>
+          <a href="#helpers-script">script </a>
         </li>
       </ul>
     </div>
@@ -109,12 +114,43 @@
 static create test</code>
       </pre>
       <p>This bootstraps a static project inside of a folder named "test". Static can write the generated site to a path of your choosing using the         <em>publish</em>
- command or serve it out with on a given port using the         <em>start</em>
+ command or serve it out on a given port using the         <em>start</em>
  command, triggering your browser to reload when needed.</p>
       <pre>
         <code>static publish ./test ./test-generated
 static start ./test 8000</code>
       </pre>
+      <p>This page is generated with Static,         <a href="https://github.com/walmartlabs/static/tree/docs">view the source here</a>
+.</p>
+      <h3 id="overview-github">Github Pages</h3>
+      <p>To use static with         <a href="http://pages.github.com/">GitHub Pages</a>
+ create a         <em>docs</em>
+ branch and a         <em>gh-pages</em>
+ branch in separate directories locally. </p>
+      <pre>
+        <code># create a docs branch containing a new static project
+static create repo-docs
+cd repo-docs
+git symbolic-ref HEAD refs/heads/docs
+git remote add origin git@github.com:username/repo.git
+git add *
+git commit -m "added docs"
+git push origin repo-docs
+cd ..
+
+# create a gh-pages branch containing the generated site
+static publish ./repo-docs ./repo-gh-pages
+cd repo-gh-pages
+git symbolic-ref HEAD refs/heads/gh-pages
+git remote add origin git@github.com:username/repo.git
+git add *
+git commit -m "added generated docs"
+git push origin gh-pages</code>
+      </pre>
+      <p>Use the         <em>start</em>
+ command to view your changes locally and when you're happy with them commit and push the         <em>docs</em>
+ and         <em>gh-pages</em>
+ branches to GitHub.</p>
       <h2 id="project">Project Structure</h2>
       <h3 id="project structure-assets">Assets</h3>
       <p>Put any media files such as images, movies, etc in here. They will be copied to the         <em>assets</em>
@@ -152,7 +188,7 @@ static start ./test 8000</code>
       <h3 id="project structure-package.json">package.json</h3>
       <p>Any keys specified here will be available inside of your handlebars templates.</p>
       <h3 id="project structure-plugins">Plugins</h3>
-      <p>Most of the behaviors described so far are all specified in the         <em>builtin.js</em>
+      <p>Most of the behaviors described so far are all specified in the         <a href="https://github.com/walmartlabs/static/blob/bootstrap/plugins/builtin.js">builtin.js</a>
  plugin. You can specify additional behaviors or modify the output of your pages with jQuery by creating a new         <em>.js</em>
  file in this directory. Each file must export a single function which will receive a         <em>static</em>
  object.</p>
@@ -212,7 +248,7 @@ static start ./test 8000</code>
       </pre>
       <h3 id="file-$">$         <em>file.$(callback)</em>
       </h3>
-      <p>Loads jQuery then calls callback with a DOM window object that represents the current file. The DOM tree will then be serialized back to a string after callback is called. The table of contents for this document is created scanning all h1, h2 and h3 tags then injecting HTML into the DOM.</p>
+      <p>Loads jQuery then calls callback with a DOM window object that represents the current file. The DOM tree will then be serialized back to a string after callback is called. The table of contents for this document is created by scanning all h1, h2 and h3 tags then injecting HTML into the DOM.</p>
       <pre>
         <code>static.file('index.handlebars', function(file) {
   file.$(function(window) {
@@ -220,12 +256,13 @@ static start ./test 8000</code>
   });
 });</code>
       </pre>
+      <p>The callback is called after the file has been processed with Markdown and Handlebars.</p>
       <h3 id="file-set">set         <em>file.set(key, value)</em>
       </h3>
       <p>Sets a value to be made available in all handlebar templates rendered by the file (the file itself + includes).</p>
       <h3 id="file-transform">transform         <em>file.transform(name [,callback])</em>
       </h3>
-      <p>Transform a file, currently available transforms are:</p>
+      <p>Transform a file. Currently available transforms are:</p>
       <ul>
         <li>handlebars</li>
         <li>markdown</li>
@@ -242,11 +279,11 @@ static start ./test 8000</code>
       </pre>
       <h3 id="file-changeextensionto">changeExtensionTo         <em>file.changeExtensionTo(extension)</em>
       </h3>
-      <p>Change the extension of the file when it is written. Does not modify the extension of the source file.</p>
+      <p>Change the extension of the file when it is written to a target. Does not modify the extension of the source file.</p>
       <h2 id="helpers">Helpers</h2>
       <h3 id="helpers-live-reload">live-reload         <em>{{live-reload}}</em>
       </h3>
-      <p>Enables live reload functionality. The         <em>styles</em>
+      <p>Put this inside of your &lt;head&gt; tag. Generates the JavaScript needed for live reload functionality. The         <em>styles</em>
 ,         <em>style</em>
 ,         <em>scripts</em>
  and         <em>script</em>
@@ -256,7 +293,8 @@ static start ./test 8000</code>
       <p>Set a value in the current file that will be made available to any other handlebars templates the current file includes.</p>
       <h3 id="helpers-include">include         <em>{{include filename [key="value"]}}</em>
       </h3>
-      <p>Include another handlebars, markdown or html file. Arbitrary values can be passed to the file if it is a handlebars template.</p>
+      <p>Include another handlebars, markdown or html file inside of the         <em>includes</em>
+ directory. Arbitrary values can be passed to the file if it is a handlebars template.</p>
       <h3 id="helpers-styles">styles         <em>{{styles [key="value"]}}</em>
       </h3>
       <p>Generate style tags for all stylesheets inside of the         <em>styles</em>
