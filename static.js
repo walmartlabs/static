@@ -38,7 +38,7 @@ var actions = {
     static.publish.apply(static, args);
   },
   create: function(target) {
-    var command = 'git clone git://github.com/syntacticx/static-bootstrap.git ' + target + '; rm -rf ' + path.join(target, '.git');
+    var command = 'git clone -b bootstrap git://github.com/walmartlabs/static.git ' + target + '; rm -rf ' + path.join(target, '.git');
     console.log(command);
     exec(command, function(error, stdout, stderr) {
       if (stdout) {
