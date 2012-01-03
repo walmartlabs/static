@@ -1,16 +1,19 @@
 {
   "name": "static",
-  "version": "0.0.1",
-  "description": "Static",
+  "version": "0.1.0",
+  "description": "Generate static sites with Markdown, Handlebars and Stylus. Live previews with socket.io.",
   "author": "Ryan Eastridge <ryan@syntacticx.com> (http://syntacticx.com)",
   "repository": {
     "type": "git",
-    "url": "git://github.com/syntacticx/static.git"
+    "web": "http://github.com/isaacs/npm",
+    "url": "git://github.com/walmartlabs/static.git"
   },
   "bin": {
     "static": "./bin/static"
   },
   "main": "static.js",
+  "license": "MIT",
+  "homepage": "http://walmartlabs.github.com/static",
   "dependencies": {
     "optimist": "*",
     "handlebars": "~1.0",
