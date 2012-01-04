@@ -1,8 +1,8 @@
 <!DOCTYPE html><html>  <head>    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Static</title>
-    <script type="text/javascript" src="scripts/whitespace.js"></script>
-    <link rel="stylesheet" href="styles/style.css">
+    <script type="text/javascript" src="/scripts/whitespace.js"></script>
+    <link rel="stylesheet" href="/styles/style.css">
 </head>
   <body>    <div id="sidebar" class="interface">
       <h2>
@@ -36,7 +36,7 @@
           <a href="#project structure-package.json">package.json</a>
         </li>
         <li>
-          <a href="#project structure-plugins">Plugins</a>
+          <a href="#project structure-index.js">index.js</a>
         </li>
       </ul>
       <h2>
@@ -70,7 +70,10 @@
           <a href="#file-set">set </a>
         </li>
         <li>
-          <a href="#file-transform">transform </a>
+          <a href="#file-render">render </a>
+        </li>
+        <li>
+          <a href="#file-transform">transform *file.transform(name</a>
         </li>
         <li>
           <a href="#file-changeextensionto">changeExtensionTo </a>
@@ -128,7 +131,7 @@ static start ./test 8000</code>
  inside your repo, and a         <em>gh-pages</em>
  branch in separate directory locally.</p>
       <pre>
-        <code># create a docs branch containing a new static project
+        <code># create a docs folder containing a new static project
 cd repo
 static create docs
 git add docs
@@ -184,10 +187,10 @@ git push origin gh-pages</code>
       </pre>
       <h3 id="project structure-package.json">package.json</h3>
       <p>Any keys specified here will be available inside of your handlebars templates.</p>
-      <h3 id="project structure-plugins">Plugins</h3>
-      <p>Most of the behaviors described so far are all specified in the         <a href="https://github.com/walmartlabs/static/blob/bootstrap/plugins/builtin.js">builtin.js</a>
- plugin. You can specify additional behaviors or modify the output of your pages with jQuery by creating a new         <em>.js</em>
- file in this directory. Each file must export a single function which will receive a         <em>static</em>
+      <h3 id="project structure-index.js">index.js</h3>
+      <p>Most of the behaviors described so far are all specified in         <a href="https://github.com/walmartlabs/static/blob/bootstrap/index.js">index.js</a>
+. You can specify additional behaviors or modify the output of your pages with jQuery by modifying this file.         <em>index.js</em>
+  must export a single function which will receive a         <em>static</em>
  object.</p>
       <pre>
         <code>module.exports = function(static) {
@@ -201,7 +204,8 @@ git push origin gh-pages</code>
   });
 }</code>
       </pre>
-      <p>The rest of the documentation details the API available inside of a plugin.</p>
+      <p>The rest of the documentation details the API available inside of a         <em>index.js</em>
+.</p>
       <h2 id="static">Static</h2>
       <h3 id="static-file">file         <em>static.file(pattern, callback)</em>
       </h3>
@@ -257,21 +261,32 @@ git push origin gh-pages</code>
       <h3 id="file-set">set         <em>file.set(key, value)</em>
       </h3>
       <p>Sets a value to be made available in all handlebar templates rendered by the file (the file itself + includes).</p>
-      <h3 id="file-transform">transform         <em>file.transform(name [,callback])</em>
+      <h3 id="file-render">render         <em>file.render(filename [,context])</em>
       </h3>
-      <p>Transform a file. Currently available transforms are:</p>
-      <ul>
-        <li>handlebars</li>
-        <li>markdown</li>
-        <li>stylus</li>
-      </ul>
-      <p>An optional callback can be specified which will receive the buffer of the current file before it is transformed plus the object which will transform the file.</p>
+      <p>Render a Markdown or Handlebars file, returning the contents as a string.         <em>filename</em>
+ is a relative path in the source directory,         <em>context</em>
+ is the context that will be available if the file is handlebars template.</p>
+      <pre>
+        <code>var output = file.render('test.handlebars', {key: 'value'});</code>
+      </pre>
+      <h3 id="file-transform">transform *file.transform(name        <em>or</em>
+callback)*</h3>
+      <p>Transform a file, currently availble transforms are         <em>handlebars</em>
+,         <em>markdown</em>
+ and         <em>stylus</em>
+.</p>
       <pre>
         <code>static.file(/\.styl$/, function(file) {
-  file.transform('stylus', function(buffer, stylus){
-
-  });
+  file.transform('stylus');
   file.changeExtensionTo('css');
+});</code>
+      </pre>
+      <p>Arbitrary transforms can be supplied by passing a callback that receives the buffer of the file and a callback to call when the transformation is complete:</p>
+      <pre>
+        <code>static.file(/\.txt$/, function(file) {
+  file.transform(function(buffer, next) {
+    next(buffer.toLowerCase());
+  });
 });</code>
       </pre>
       <h3 id="file-changeextensionto">changeExtensionTo         <em>file.changeExtensionTo(extension)</em>
