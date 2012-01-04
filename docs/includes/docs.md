@@ -15,20 +15,18 @@ This page is generated with Static, [view the source here](https://github.com/wa
 
 ### Github Pages
 
-To use static with [GitHub Pages](http://pages.github.com/) create a *docs* branch and a *gh-pages* branch in separate directories locally. 
+To use static with [GitHub Pages](http://pages.github.com/) create a new static project in a directory named *docs* inside your repo, and a *gh-pages* branch in separate directory locally.
 
     # create a docs branch containing a new static project
-    static create repo-docs
-    cd repo-docs
-    git symbolic-ref HEAD refs/heads/docs
-    git remote add origin git@github.com:username/repo.git
-    git add *
+    cd repo
+    static create docs
+    git add docs
     git commit -m "added docs"
-    git push origin repo-docs
+    git push origin master
     cd ..
 
     # create a gh-pages branch containing the generated site
-    static publish ./repo-docs ./repo-gh-pages
+    static publish ./repo/docs ./repo-gh-pages
     cd repo-gh-pages
     git symbolic-ref HEAD refs/heads/gh-pages
     git remote add origin git@github.com:username/repo.git
@@ -36,7 +34,7 @@ To use static with [GitHub Pages](http://pages.github.com/) create a *docs* bran
     git commit -m "added generated docs"
     git push origin gh-pages
     
-Use the *start* command to view your changes locally and when you're happy with them commit and push the *docs* and *gh-pages* branches to GitHub.
+Use the *start* command to view your changes locally and when you're happy with them commit and push the *gh-pages* branches to GitHub.
 
 ## Project Structure
 
