@@ -373,6 +373,14 @@ function guessFilename(name) {
     name + '.coffee',
     name + '.js'
   ], function(guess) {
+    try {
+      var stats = fs.statSync(guess);
+      if (stats.isDirectory()) {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
     return path.existsSync(guess);
   });
 }
