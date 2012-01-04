@@ -57,6 +57,9 @@ var currentFile = false;
 
 var Static = function(working_path) {
   this.path = working_path;
+  if (!this.path.match(/^(\/|\.\/)/)) {
+    this.path = './' + this.path;
+  }
   try {
     this.package = JSON.parse(fs.readFileSync(path.join(this.path, 'package.json')));
   } catch (e) {
@@ -92,6 +95,7 @@ _.extend(Static.prototype, {
         pattern = pattern.replace(/^\//, '');
       }
       if ((typeof pattern === 'string' && fragment === pattern) || fragment.match(pattern)) {
+        file._lastPattern = pattern;
         callback.call(this, file);
       }
     }, this);
@@ -107,11 +111,8 @@ _.extend(Static.prototype, {
   },
   loadPlugins: function() {
     builtInPlugin.call(this, this);
-    var plugins_dir = path.join(process.cwd(), this.path, 'plugins');
-    fs.readdirSync(plugins_dir).forEach(function(plugin_path) {
-      var plugin = require(path.join(plugins_dir, plugin_path));
-      plugin(this);
-    }, this);
+    var plugin = require(path.join(process.cwd(), this.path, 'index.js'));
+    plugin(this);
   },
   watch: function(callback) {
     this.loadPlugins();
@@ -188,7 +189,7 @@ function broadcastUpdates() {
     } else {
       return {
         urls: file._writeTargets.map(function(write_target) {
-          return path.join(write_target, file.name);
+          return path.join(write_target[0], file.name);
         })
       };
     }
@@ -208,10 +209,13 @@ function broadcastUpdates() {
 }
 
 function publishToPath(target_path) {
+  if (!target_path.match(/^(\/|\.\/)/)) {
+    target_path = './' + target_path;
+  }
   this.on('write', _.bind(function(file, next) {
     file._writeTargets.forEach(function(write_target) {
       var source = path.join(this.path, file.source.substring(this.path.length - 1))
-      var target = path.join(target_path, write_target, file.name);
+      var target = path.join(target_path, write_target[0], file.name.replace(write_target[1], ''));
       wrench.mkdirSyncRecursive(path.dirname(target));
       fs.writeFile(target, file.buffer);
       console.log('Static wrote: ' + target);
@@ -220,7 +224,7 @@ function publishToPath(target_path) {
   }, this));
   this.on('destroy', function(file) {
     file._writeTargets.forEach(function(write_target) {
-      var target = path.join(target_path, write_target, file.name);
+      var target = path.join(target_path, write_target[0], file.name);
       fs.unlink(target);
       console.log('Static removed: ' + target);
     });
@@ -231,7 +235,7 @@ var File = function(static, source) {
   this.static = static;
   this.source = source;
   this._scope = {};
-  this.name = path.basename(this.source);
+  this.name = this.source.substring(this.static.path.length - 1);
   this._writeTargets = [];
   this._dependencies = [];
   this.setMaxListeners(100);
@@ -271,7 +275,7 @@ _.extend(File.prototype, {
     delete this.static.files[this.source];
   },
   write: function(target) {
-    this._writeTargets.push(target);
+    this._writeTargets.push([target, this._lastPattern]);
   },
   set: function(key, value) {
     return this._scope[key] = value;
@@ -282,12 +286,19 @@ _.extend(File.prototype, {
   unset: function(key) {
     delete this._scope[key];
   },
-  transform: function(name, callback) {
+  transform: function(name) {
     this.on('read', function(file, next) {
-      transforms[name].call(file, file.buffer, function(buffer) {
-        file.buffer = buffer;
-        next();
-      }, callback);
+      if (typeof name === 'string') {
+        transforms[name].call(file, file.buffer, function(buffer) {
+          file.buffer = buffer;
+          next();
+        });
+      } else {
+        name.call(file, file.buffer, function(buffer) {
+          file.buffer = buffer;
+          next();
+        });
+      }
     });
   },
   changeExtensionTo: function(extension) {
@@ -329,16 +340,18 @@ _.extend(File.prototype, {
       }, this));
     }
   },
-  include: function(filename, options) {
+  render: function(filename, options) {
+    var original_filename = filename;
     filename = guessFilename(path.join(this.static.path, filename));
     if (!filename) {
-      throw new Error(filename + ' does not exist');
+      throw new Error((filename || original_filename) + ' does not exist');
     }
     this.addDependency(filename.substring(this.static.path.length - 1));
     var buffer = fs.readFileSync(filename);
     if (filename.match(/\.(md|markdown)$/)) {
       return markdown.toHTML(buffer.toString());
     } else if (filename.match(/\.handlebars$/)) {
+      currentFile = this;
       try {
         var template = handlebars.compile(fs.readFileSync(filename).toString());
         return template(_.extend({}, this._scope, options || {}));
@@ -386,17 +399,11 @@ function guessFilename(name) {
 }
 
 var transforms = {
-  markdown: function(buffer, next, callback) {
-    if (callback) {
-      callback(buffer, markdown);
-    }
+  markdown: function(buffer, next) {
     next(markdown.toHTML(buffer.toString()));
   },
-  handlebars: function(buffer, next, callback) {
+  handlebars: function(buffer, next) {
     currentFile = this;
-    if (callback) {
-      callback(buffer, handlebars);
-    }
     try {
       var template = handlebars.compile(buffer.toString());
       next(template(this._scope));
@@ -405,11 +412,8 @@ var transforms = {
       next('');
     }
   },
-  stylus: function(buffer, next, callback) {
+  stylus: function(buffer, next) {
     var compiler = stylus(buffer.toString());
-    if (callback) {
-      callback(buffer, compiler);
-    }
     compiler.render(function(error, buffer) {
       if (error) {
         console.log('Stylus error: ' + error.name);
@@ -461,7 +465,7 @@ function builtInPlugin(static) {
   
   //add {{include path}} helper
   static.helper('include', function(file, include_path, options) {
-    return file.include(path.join('includes', file.renderString(include_path)), options ? options.hash : {});
+    return file.render(path.join('includes', file.renderString(include_path)), options ? options.hash : {});
   });
   
   function attributesFromOptions(options) {
@@ -479,10 +483,10 @@ function builtInPlugin(static) {
   function script(file, src, options) {
     src = path.join('scripts', file.renderString(src));
     file.addDependency(src);
-    return '<script type="text/javascript" src="' + src + '"' + attributesFromOptions(options) + '></script>';
+    return '<script type="text/javascript" src="/' + src + '"' + attributesFromOptions(options) + '></script>';
   };
   static.helper('scripts', function(file, options) {
-    return (file.scripts || []).map(function(src) {
+    return (static.readdir('scripts') || []).map(function(src) {
       return script(file, src, options);
     }).join("\n");
   });
@@ -492,10 +496,10 @@ function builtInPlugin(static) {
   function style(file, href, options) {
     href = path.join('styles', file.renderString(href));
     file.addDependency(href);
-    return '<link rel="stylesheet" href="' + href + '"' + attributesFromOptions(options) + '/>';
+    return '<link rel="stylesheet" href="/' + href + '"' + attributesFromOptions(options) + '/>';
   };
   static.helper('styles', function(file, options) {
-    return (file.styles || []).map(function(href) {
+    return (static.readdir('styles') || []).map(function(href) {
       return style(file, href, options);
     }).join("\n");
   });

@@ -17,7 +17,7 @@ This page is generated with Static, [view the source here](https://github.com/wa
 
 To use static with [GitHub Pages](http://pages.github.com/) create a new static project in a directory named *docs* inside your repo, and a *gh-pages* branch in separate directory locally.
 
-    # create a docs branch containing a new static project
+    # create a docs folder containing a new static project
     cd repo
     static create docs
     git add docs
@@ -72,9 +72,9 @@ Stylus or CSS files, will be processed and copied to the *styles* folder of the 
 
 Any keys specified here will be available inside of your handlebars templates.
 
-### Plugins
+### index.js
 
-Most of the behaviors described so far are all specified in the [builtin.js](https://github.com/walmartlabs/static/blob/bootstrap/plugins/builtin.js) plugin. You can specify additional behaviors or modify the output of your pages with jQuery by creating a new *.js* file in this directory. Each file must export a single function which will receive a *static* object.
+Most of the behaviors described so far are all specified in [index.js](https://github.com/walmartlabs/static/blob/bootstrap/index.js). You can specify additional behaviors or modify the output of your pages with jQuery by modifying this file. *index.js*  must export a single function which will receive a *static* object.
 
     module.exports = function(static) {
       static.file('index.handlebars', function(file) {
@@ -87,7 +87,7 @@ Most of the behaviors described so far are all specified in the [builtin.js](htt
       });
     }
 
-The rest of the documentation details the API available inside of a plugin.
+The rest of the documentation details the API available inside of a *index.js*.
 
 ## Static
 
@@ -144,21 +144,27 @@ The callback is called after the file has been processed with Markdown and Handl
 
 Sets a value to be made available in all handlebar templates rendered by the file (the file itself + includes).
 
-### transform *file.transform(name [,callback])*
+### render *file.render(filename [,context])*
 
-Transform a file. Currently available transforms are:
+Render a Markdown or Handlebars file, returning the contents as a string. *filename* is a relative path in the source directory, *context* is the context that will be available if the file is handlebars template.
 
-- handlebars
-- markdown
-- stylus
+    var output = file.render('test.handlebars', {key: 'value'});
 
-An optional callback can be specified which will receive the buffer of the current file before it is transformed plus the object which will transform the file.
+### transform *file.transform(name_or_callback)*
+
+Transform a file, currently availble transforms are *handlebars*, *markdown* and *stylus*.
 
     static.file(/\.styl$/, function(file) {
-      file.transform('stylus', function(buffer, stylus){
-        
-      });
+      file.transform('stylus');
       file.changeExtensionTo('css');
+    });
+
+Arbitrary transforms can be supplied by passing a callback that receives the buffer of the file and a callback to call when the transformation is complete:
+
+    static.file(/\.txt$/, function(file) {
+      file.transform(function(buffer, next) {
+        next(buffer.toLowerCase());
+      });
     });
 
 ### changeExtensionTo *file.changeExtensionTo(extension)*
