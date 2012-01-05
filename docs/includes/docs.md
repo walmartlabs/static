@@ -150,7 +150,7 @@ Render a Markdown or Handlebars file, returning the contents as a string. *filen
 
     var output = file.render('test.handlebars', {key: 'value'});
 
-### transform *file.transform(name_or_callback)*
+### transform *file.transform(callback)*
 
 Transform a file, currently availble transforms are *handlebars*, *markdown* and *stylus*.
 
