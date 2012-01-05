@@ -1,8 +1,8 @@
 <!DOCTYPE html><html>  <head>    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Static</title>
-    <script type="text/javascript" src="/scripts/whitespace.js"></script>
-    <link rel="stylesheet" href="/styles/style.css">
+    <script type="text/javascript" src="scripts/whitespace.js"></script>
+    <link rel="stylesheet" href="styles/style.css">
 </head>
   <body>    <div id="sidebar" class="interface">
       <h2>
@@ -103,6 +103,12 @@
         </li>
         <li>
           <a href="#helpers-script">script </a>
+        </li>
+        <li>
+          <a href="#helpers-root">root </a>
+        </li>
+        <li>
+          <a href="#helpers-target">target </a>
         </li>
       </ul>
     </div>
@@ -321,6 +327,12 @@ callback)*</h3>
       <h3 id="helpers-script">script         <em>{{script [key="value"]}}</em>
       </h3>
       <p>Generate a script tag for a single script.</p>
+      <h3 id="helpers-root">root         <em>{{root}}</em>
+      </h3>
+      <p>Path to the root of the site from the current page.</p>
+      <h3 id="helpers-target">target         <em>{{target}}</em>
+      </h3>
+      <p>The current filename that is being written.</p>
 </div>
 </body>
 </html>
