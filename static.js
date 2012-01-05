@@ -63,7 +63,6 @@ var Static = function(working_path) {
   try {
     this.package = JSON.parse(fs.readFileSync(path.join(this.path, 'package.json')));
   } catch (e) {
-    console.log(e);
     this.package = {};
   }
   this.hostname = os.hostname();
@@ -189,7 +188,7 @@ function broadcastUpdates() {
     } else {
       return {
         urls: file._writeTargets.map(function(write_target) {
-          return path.join(write_target[0], file.name);
+          return path.join(write_target[0], file.name.replace(write_target[1], ''));
         })
       };
     }
@@ -213,21 +212,16 @@ function publishToPath(target_path) {
     target_path = './' + target_path;
   }
   this.on('write', _.bind(function(file, next) {
-    file._writeTargets.forEach(function(write_target) {
-      var source = path.join(this.path, file.source.substring(this.path.length - 1))
-      var target = path.join(target_path, write_target[0], file.name.replace(write_target[1], ''));
-      wrench.mkdirSyncRecursive(path.dirname(target));
-      fs.writeFile(target, file.buffer);
-      console.log('Static wrote: ' + target);
-    }, this);
+    var target = path.join(target_path, file.target);
+    wrench.mkdirSyncRecursive(path.dirname(target));
+    fs.writeFile(target, file.buffer);
+    console.log('Static wrote: ' + target);
     next();
   }, this));
   this.on('destroy', function(file) {
-    file._writeTargets.forEach(function(write_target) {
-      var target = path.join(target_path, write_target[0], file.name);
-      fs.unlink(target);
-      console.log('Static removed: ' + target);
-    });
+    var target = path.join(target_path, file.target);
+    fs.unlink(target);
+    console.log('Static removed: ' + target);
   });
 }
 
@@ -245,25 +239,32 @@ _.extend(File.prototype, {
   update: function() {
     var file = this;
     fs.readFile(this.source, function(err, buffer) {
-      file.buffer = buffer;
-      var loop = function(object, event_name, complete) {
-        var listeners = _.toArray(object.listeners(event_name));
-        var step = function() {
-          if (listeners.length) {
-            var listener = listeners.shift();
-            listener(file, step);
-          } else {
-            if (complete) {
-              complete();
+      var original_buffer = buffer;
+      file._writeTargets.forEach(function(write_target) {
+        file.target = path.join(write_target[0], file.name.replace(write_target[1], ''));
+        file.set('target', file.target);
+        var depth = file.target.split('/').length;
+        file.set('root', new Array(depth).join('../'));
+        file.buffer = original_buffer;
+        var loop = function(object, event_name, complete) {
+          var listeners = _.toArray(object.listeners(event_name));
+          var step = function() {
+            if (listeners.length) {
+              var listener = listeners.shift();
+              listener(file, step);
+            } else {
+              if (complete) {
+                complete();
+              }
             }
-          }
+          };
+          step();
         };
-        step();
-      };
-      loop(file, 'read', function() {
-        loop(file.static, 'read', function() {
-          loop(file, 'write', function() {
-            loop(file.static, 'write');
+        loop(file, 'read', function() {
+          loop(file.static, 'read', function() {
+            loop(file, 'write', function() {
+              loop(file.static, 'write');
+            });
           });
         });
       });
@@ -483,7 +484,7 @@ function builtInPlugin(static) {
   function script(file, src, options) {
     src = path.join('scripts', file.renderString(src));
     file.addDependency(src);
-    return '<script type="text/javascript" src="/' + src + '"' + attributesFromOptions(options) + '></script>';
+    return '<script type="text/javascript" src="' + path.join(file.get('root'), src) + '"' + attributesFromOptions(options) + '></script>';
   };
   static.helper('scripts', function(file, options) {
     return (static.readdir('scripts') || []).map(function(src) {
@@ -496,7 +497,7 @@ function builtInPlugin(static) {
   function style(file, href, options) {
     href = path.join('styles', file.renderString(href));
     file.addDependency(href);
-    return '<link rel="stylesheet" href="/' + href + '"' + attributesFromOptions(options) + '/>';
+    return '<link rel="stylesheet" href="' + path.join(file.get('root'), href) + '"' + attributesFromOptions(options) + '/>';
   };
   static.helper('styles', function(file, options) {
     return (static.readdir('styles') || []).map(function(href) {

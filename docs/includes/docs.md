@@ -200,3 +200,11 @@ Generate script tags for all scripts inside of the *scripts* folder. Arbitrary H
 ### script *{{script [key="value"]}}*
 
 Generate a script tag for a single script.
+
+### root *{{root}}*
+
+Path to the root of the site from the current page.
+
+### target *{{target}}*
+
+The current filename that is being written.
