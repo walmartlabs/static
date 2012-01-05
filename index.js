@@ -18,12 +18,6 @@ module.exports = function(static) {
 
   //copy pages to root
   static.file(/^pages\//, function(file) {
-    //create an array of all scripts and styles for handlebars
-    //helpers of the same names, include socket.io first, only
-    //used for live reload functionality
-    file.scripts = static.readdir('scripts');
-    file.styles = static.readdir('styles');
-
     //add package.json values to scope of file
     for (var key in static.package) {
       file.set(key, static.package[key]);
@@ -40,9 +34,6 @@ module.exports = function(static) {
   static.file(/\.(md|markdown)$/, function(file) {
     file.transform('markdown');
     file.changeExtensionTo('html');
-    file.$(function(window) {
-      window.$('code').remove();
-    });
   });
 
   //process handlebars files with handlebars
