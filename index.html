@@ -213,7 +213,7 @@ git push origin gh-pages</code>
       <h3 id="static-file">file         <em>static.file(pattern, callback)</em>
       </h3>
       <p>Select files in the source project to modify or copy.         <em>pattern</em>
- can be a relative path as a string or a regular expression. Callback will be called for each matching file with the file object as it's only argument. This example from the         <em>builtin.js</em>
+ can be a relative path as a string or a regular expression. Callback will be called for each matching file with the file object as it's only argument. This example from the         <em>index.js</em>
  plugin selects markdown files in any directory:</p>
       <pre>
         <code>static.file(/\.(md|markdown)$/, function(file) {
@@ -243,7 +243,7 @@ git push origin gh-pages</code>
       <h3 id="file-write">write         <em>file.write(target_path)</em>
       </h3>
       <p>Write the file to a given path in the generated site.         <em>target_path</em>
- should be relative and only a directory name. This example from         <em>builtin.js</em>
+ should be relative and only a directory name. This example from         <em>index.js</em>
  copies all asset files:</p>
       <pre>
         <code>static.file(/^assets\//, function(file) {
