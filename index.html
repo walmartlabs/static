@@ -122,12 +122,10 @@
         <code>npm install -g static
 static create test</code>
       </pre>
-      <p>This bootstraps a static project inside of a folder named "test". Static can write the generated site to a path of your choosing using the         <em>publish</em>
- command or serve it out on a given port using the         <em>start</em>
- command, triggering your browser to reload when needed.</p>
+      <p>This bootstraps a static project inside of a folder named "test". You can then use the         <em>static</em>
+ command to watch this source folder and publish the generated site to an arbitrary number of target folders. Specify a port number to start an express server which will trigger automatic page reloads when files inside the source directory change.</p>
       <pre>
-        <code>static publish ./test ./test-generated
-static start ./test 8000</code>
+        <code>static ./test ./test-generated 8000    </code>
       </pre>
       <p>This page is generated with Static,         <a href="https://github.com/walmartlabs/static/tree/docs">view the source here</a>
 .</p>
@@ -146,7 +144,7 @@ git push origin master
 cd ..
 
 # create a gh-pages branch containing the generated site
-static publish ./repo/docs ./repo-gh-pages
+static ./repo/docs ./repo-gh-pages 8000
 cd repo-gh-pages
 git symbolic-ref HEAD refs/heads/gh-pages
 git remote add origin git@github.com:username/repo.git
@@ -154,8 +152,7 @@ git add *
 git commit -m "added generated docs"
 git push origin gh-pages</code>
       </pre>
-      <p>Use the         <em>start</em>
- command to view your changes locally and when you're happy with them commit and push the         <em>gh-pages</em>
+      <p>View your changes locally on port 8000 and when you're happy with the changes commit and push the         <em>gh-pages</em>
  branches to GitHub.</p>
       <h2 id="project">Project Structure</h2>
       <h3 id="project structure-assets">Assets</h3>
