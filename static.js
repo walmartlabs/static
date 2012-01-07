@@ -15,43 +15,6 @@ var fs = require('fs'),
   os = require('os'),
   exec = require('child_process').exec;
 
-var actions = {
-  start: function() {
-    var path, port;
-    if (arguments.length === 2) {
-      path = arguments[0];
-      port = arguments[1];
-    } else if (arguments.length === 1) {
-      if (String(arguments[0]).match(/^[\d]+$/)) {
-        port = arguments[0];
-      } else {
-        path = arguments[0];
-      }
-    }
-    var static = new Static(path || '.');
-    static.listen(port || 8000);
-  },
-  publish: function() {
-    var static = new Static(arguments.length < 2 ? '.' : arguments[0]);
-    var args = _.toArray(arguments);
-    args = args.slice(1);
-    static.publish.apply(static, args);
-  },
-  create: function(target) {
-    var command = 'git clone -b bootstrap git://github.com/walmartlabs/static.git ' + target + '; rm -rf ' + path.join(target, '.git');
-    console.log(command);
-    exec(command, function(error, stdout, stderr) {
-      if (stdout) {
-        console.log(stdout);
-      }
-      if (stderr) {
-        console.log(stderr);
-      }
-      console.log('new static project created in ' + target);
-    });
-  }
-};
-
 //for handlebars helpers
 var currentFile = false;
 
@@ -68,10 +31,6 @@ var Static = function(working_path) {
   this.hostname = os.hostname();
   this.files = {};
   this.setMaxListeners(100);
-};
-
-Static.action = function(name) {
-  return actions[name].apply(this, _.toArray(arguments).slice(1));
 };
 
 Static.prototype = new process.EventEmitter();
@@ -114,6 +73,10 @@ _.extend(Static.prototype, {
     plugin(this);
   },
   watch: function(callback) {
+    if (this._watching) {
+      return false;
+    }
+    this._watching = true;
     this.loadPlugins();
     watch.watchTree(this.path, _.bind(function (filename, curr, prev) {
       if (typeof filename == "object" && prev === null && curr === null) {
@@ -153,6 +116,10 @@ _.extend(Static.prototype, {
     this.watch();
   },
   listen: function(port) {
+    if (this._listening) {
+      return false;
+    }
+    this._listening = true;
     var tmp_path = '/tmp/static-listen-' + process.pid;
     publishToPath.call(this, tmp_path);
     process.on('SIGINT', function() {
@@ -506,5 +473,19 @@ function builtInPlugin(static) {
   });
   static.helper('style', style);
 }
+
+Static.create = function(target) {
+  var command = 'git clone -b bootstrap git://github.com/walmartlabs/static.git ' + target + '; rm -rf ' + path.join(target, '.git');
+  console.log(command);
+  exec(command, function(error, stdout, stderr) {
+    if (stdout) {
+      console.log(stdout);
+    }
+    if (stderr) {
+      console.log(stderr);
+    }
+    console.log('new static project created in ' + target);
+  });
+};
 
 module.exports = Static;

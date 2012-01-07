@@ -11,4 +11,19 @@ if (argv.h || argv.help || !action) {
   return;
 }
 
-Static.action.apply(this, argv._);
+if (action === 'create') {
+  Static.create(argv._[1]);
+} else {
+  var static = new Static(argv._[0] || '.');
+  if (argv._.length < 2) {
+    static.listen(8000);
+  } else {
+    argv._.slice(1).forEach(function(arg) {
+      if (arg && typeof arg === 'number' || arg.match(/^[\d]+$/)) {
+        static.listen(arg);
+      } else {
+        static.publish(arg);
+      }
+    });
+  }
+}

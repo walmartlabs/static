@@ -6,10 +6,9 @@ Generate static sites with [Markdown](http://daringfireball.net/projects/markdow
     npm install -g static
     static create test
 
-This bootstraps a static project inside of a folder named "test". Static can write the generated site to a path of your choosing using the *publish* command or serve it out on a given port using the *start* command, triggering your browser to reload when needed.
+This bootstraps a static project inside of a folder named "test". You can then use the *static* command to watch this source folder and publish the generated site to an arbitrary number of target folders. Specify a port number to start an express server which will trigger automatic page reloads when files inside the source directory change.
 
-    static publish ./test ./test-generated
-    static start ./test 8000
+    static ./test ./test-generated 8000    
 
 This page is generated with Static, [view the source here](https://github.com/walmartlabs/static/tree/docs).
 
@@ -26,7 +25,7 @@ To use static with [GitHub Pages](http://pages.github.com/) create a new static 
     cd ..
 
     # create a gh-pages branch containing the generated site
-    static publish ./repo/docs ./repo-gh-pages
+    static ./repo/docs ./repo-gh-pages 8000
     cd repo-gh-pages
     git symbolic-ref HEAD refs/heads/gh-pages
     git remote add origin git@github.com:username/repo.git
@@ -34,7 +33,7 @@ To use static with [GitHub Pages](http://pages.github.com/) create a new static 
     git commit -m "added generated docs"
     git push origin gh-pages
     
-Use the *start* command to view your changes locally and when you're happy with them commit and push the *gh-pages* branches to GitHub.
+View your changes locally on port 8000 and when you're happy with the changes commit and push the *gh-pages* branches to GitHub.
 
 ## Project Structure
 
