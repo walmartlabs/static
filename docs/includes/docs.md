@@ -92,7 +92,7 @@ The rest of the documentation details the API available inside of a *index.js*.
 
 ### file *static.file(pattern, callback)*
 
-Select files in the source project to modify or copy. *pattern* can be a relative path as a string or a regular expression. Callback will be called for each matching file with the file object as it's only argument. This example from the *builtin.js* plugin selects markdown files in any directory:
+Select files in the source project to modify or copy. *pattern* can be a relative path as a string or a regular expression. Callback will be called for each matching file with the file object as it's only argument. This example from the *index.js* plugin selects markdown files in any directory:
 
     static.file(/\.(md|markdown)$/, function(file) {
       file.transform('markdown');
@@ -121,7 +121,7 @@ Parsed *package.json*
 
 ### write *file.write(target_path)*
 
-Write the file to a given path in the generated site. *target_path* should be relative and only a directory name. This example from *builtin.js* copies all asset files:
+Write the file to a given path in the generated site. *target_path* should be relative and only a directory name. This example from *index.js* copies all asset files:
 
     static.file(/^assets\//, function(file) {
       file.write('assets');
