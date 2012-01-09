@@ -1,17 +1,16 @@
 #!/usr/bin/env node
 
 var argv = require('optimist').argv,
-  Static = require('../static.js'),
-  action = argv._[0];
+  Static = require('../static.js');
 
 // Show help prompt if requested or if the 
 // incorrect usage options are supplied
-if (argv.h || argv.help || !action) {
-  console.log(static.help);
+if (argv.h || argv.help) {
+  console.log(Static.help);
   return;
 }
 
-if (action === 'create') {
+if (argv._[0] === 'create') {
   Static.create(argv._[1]);
 } else {
   var static = new Static(argv._[0] || '.');

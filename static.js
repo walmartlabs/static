@@ -20,7 +20,7 @@ var currentFile = false;
 
 var Static = function(working_path) {
   this.path = working_path;
-  if (!this.path.match(/^(\/|\.\/)/)) {
+  if (!this.path.match(/^(\/|\.\/?)/)) {
     this.path = './' + this.path;
   }
   try {
@@ -32,6 +32,11 @@ var Static = function(working_path) {
   this.files = {};
   this.setMaxListeners(100);
 };
+
+Static.help = [
+  'static create path',
+  'static path target-directory port-number'
+].join("\n");
 
 Static.prototype = new process.EventEmitter();
 _.extend(Static.prototype, {
@@ -206,6 +211,8 @@ _.extend(File.prototype, {
   update: function() {
     var file = this;
     fs.readFile(this.source, function(err, buffer) {
+      file.emit('buffer-available', file);
+      file.static.emit('buffer-available', file);
       var original_buffer = buffer;
       file._writeTargets.forEach(function(write_target) {
         file.target = path.join(write_target[0], file.name.replace(write_target[1], ''));
@@ -301,9 +308,8 @@ _.extend(File.prototype, {
     if (this._dependencies.indexOf(filename) === -1) {
       this._dependencies.push(filename);
       this.static.file(filename, _.bind(function(file) {
-        file.on('write', _.bind(function(file, next) {
+        file.on('buffer-available', _.bind(function(file) {
           this.update();
-          next();
         }, this));
       }, this));
     }
@@ -415,7 +421,7 @@ function builtInPlugin(static) {
         "      return url.replace(/index(\\.[a-z]+)?$/, '');",
         "    }).indexOf(path) !== -1;",
         "  }",
-        "  var socket = io.connect('http://" + static.hostname + "');",
+        "  var socket = io.connect('http://' + window.location.hostname);",
         "  socket.on('reload', function(data) {",
         "    if (shouldExecute(data)) {",
         "      window.location.reload();",
