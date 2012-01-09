@@ -207,3 +207,27 @@ Path to the root of the site from the current page.
 ### target *{{target}}*
 
 The current filename that is being written.
+
+## Recipes
+
+### Page Templates
+
+The default project assumes each page will *include* a header and a footer. You could instead insert the content of each page into a template:
+
+    static.file(/^pages\//, function(file) {
+      file.write('.');
+      file.transform(function(buffer, next) {
+        next(file.render('templates/index.handlebars', {
+          yield: buffer
+        }));
+      });
+    });
+
+Inside of templates/index.handlebars:
+
+    <html>
+      <body>
+        {{{yield}}}
+      </body>
+    </html>
+
