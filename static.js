@@ -74,7 +74,8 @@ _.extend(Static.prototype, {
   },
   loadPlugins: function() {
     builtInPlugin.call(this, this);
-    var plugin = require(path.join(process.cwd(), this.path, 'index.js'));
+    var plugin_path = path.join(process.cwd(), this.path, 'index.js');
+    var plugin = require(plugin_path);
     plugin(this);
   },
   watch: function(callback) {
@@ -290,10 +291,24 @@ _.extend(File.prototype, {
             console.log(errors);
             next();
           } else {
-            callback(window);
-            window.$('script[src="' + jquery_path + '"]').remove();
-            file.buffer = '<!DOCTYPE html>' + window.document.documentElement.outerHTML;
-            next();
+            var finish = function() {
+              window.$('script[src="' + jquery_path + '"]').remove();
+              file.buffer = '<!DOCTYPE html>' + window.document.documentElement.outerHTML;
+              next();
+            };
+            try {
+              if (callback.length < 2) {
+                callback(window);
+                finish();
+              } else {
+                callback(window, finish);
+              }
+            } catch(e) {
+              console.log("Static: failed to write: " + file.target);
+              console.log('Exception thrown:');
+              console.log(e);
+              next();
+            }
           }
         });
       } catch(e) {
