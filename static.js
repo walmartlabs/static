@@ -319,7 +319,9 @@ _.extend(File.prototype, {
   },
   addDependency: function(filename) {
     //TODO: fix stylus hack
-    filename = filename.replace(/\.css$/, '.styl');
+    if (filename.match(/\.css$/)) {
+      this.addDependency(filename.replace(/\.css$/, '.styl'));      
+    }
     if (this._dependencies.indexOf(filename) === -1) {
       this._dependencies.push(filename);
       this.static.file(filename, _.bind(function(file) {
