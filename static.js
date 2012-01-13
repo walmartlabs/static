@@ -44,12 +44,13 @@ _.extend(Static.prototype, {
     transforms[name] = callback;
   },
   readdir: function(dirname) {
-    return _.compact(fs.readdirSync(path.join(this.path, dirname)).map(function(filename) {
-      if (!filename.match(/^\./)) {
+    return _.compact(fs.readdirSync(path.join(this.path, dirname)).map(_.bind(function(filename) {
+      var stats = fs.statSync(path.join(this.path, dirname, filename));
+      if (!stats.isDirectory() && !filename.match(/^\./)) {
         //TODO: remove stylus and coffee references
         return path.join(path, filename.replace(/\.styl$/, '.css').replace(/\.coffee$/, '.js'));
       }
-    }));
+    }, this)));
   },
   file: function(pattern, callback) {
     var iterator = _.bind(function(file) {
