@@ -6,12 +6,14 @@ var fs = require('fs'),
   path = require('path'),
   stylus = require('stylus'),
   handlebars = require('handlebars'),
+  highlight = require('highlight'),
   express = require('express'),
   _ = require('underscore'),
   wrench = require('wrench'),
   watch = require('watch'),
   io = require('socket.io'),
   jsdom = require('jsdom'),
+  domToHtml = require('./lib/domtohtml').domToHtml,
   os = require('os'),
   exec = require('child_process').exec;
 
@@ -293,7 +295,7 @@ _.extend(File.prototype, {
           } else {
             var finish = function() {
               window.$('script[src="' + jquery_path + '"]').remove();
-              file.buffer = '<!DOCTYPE html>' + window.document.documentElement.outerHTML;
+              file.buffer = window.document.doctype + domToHtml(window.document, true, true);
               next();
             };
             try {
