@@ -1,6 +1,6 @@
 {
   "name": "static",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Generate static sites with Markdown, Handlebars and Stylus. Live previews with socket.io.",
   "author": "Ryan Eastridge <ryan@syntacticx.com> (http://syntacticx.com)",
   "repository": {
@@ -25,5 +25,9 @@
     "wrench": "*",
     "watch": "0.5.0",
     "socket.io": "*"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": "*"
   }
 }
