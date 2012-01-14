@@ -129,11 +129,12 @@ Write the file to a given path in the generated site. *target_path* should be re
 
 ### $ *file.$(callback)*
 
-Loads jQuery then calls callback with a DOM window object that represents the current file. The DOM tree will then be serialized back to a string after callback is called. The table of contents for this document is created by scanning all h1, h2 and h3 tags then injecting HTML into the DOM.
+Loads jQuery then calls callback with a DOM window object representing the current file and a *next* function that must be called. The DOM tree will then be serialized back to a string after callback is called. The table of contents for this document is created by scanning all h1, h2 and h3 tags then injecting HTML into the DOM.
 
     static.file('index.handlebars', function(file) {
-      file.$(function(window) {
+      file.$(function(window, next) {
         window.$ === window.jQuery;
+        next();
       });
     });
 
