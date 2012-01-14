@@ -306,7 +306,7 @@ _.extend(File.prototype, {
             } catch(e) {
               console.log("Static: failed to write: " + file.target);
               console.log('Exception thrown:');
-              console.log(e);
+              console.log(e.stack || e);
               next();
             }
           }
