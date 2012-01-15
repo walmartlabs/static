@@ -252,8 +252,8 @@ _.extend(File.prototype, {
     this.static.emit('destroy', this);
     delete this.static.files[this.source];
   },
-  write: function(target) {
-    this._writeTargets.push([target, this._lastPattern]);
+  write: function(target, replace) {
+    this._writeTargets.push([target, replace != null ? replace : this._lastPattern]);
   },
   set: function(key, value) {
     return this._scope[key] = value;
