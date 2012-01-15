@@ -1,20 +1,20 @@
 //TODO: readdir should read target, not source
 //TODO: connect middleware for styles and scripts
 
-var fs = require('fs'),
-  markdown = require('markdown').markdown,
-  path = require('path'),
-  stylus = require('stylus'),
-  handlebars = require('handlebars'),
-  express = require('express'),
-  _ = require('underscore'),
-  wrench = require('wrench'),
-  watch = require('watch'),
-  io = require('socket.io'),
-  jsdom = require('jsdom'),
-  domToHtml = require('./lib/domtohtml').domToHtml,
-  os = require('os'),
-  exec = require('child_process').exec;
+var _ = require('underscore'),
+    domToHtml = require('./lib/domtohtml').domToHtml,
+    exec = require('child_process').exec,
+    express = require('express'),
+    fs = require('fs'),
+    handlebars = require('handlebars'),
+    io = require('socket.io'),
+    jsdom = require('jsdom'),
+    markdown = require('markdown').markdown,
+    os = require('os'),
+    path = require('path'),
+    stylus = require('stylus'),
+    watch = require('watch'),
+    wrench = require('wrench');
 
 //for handlebars helpers
 var currentFile = false;
