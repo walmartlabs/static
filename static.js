@@ -290,7 +290,7 @@ _.extend(File.prototype, {
           jquery_path
         ], function(errors, window) {
           if (errors) {
-            console.log(errors);
+            console.log('$ error', errors, file.buffer);
             next();
           } else {
             var finish = function() {
