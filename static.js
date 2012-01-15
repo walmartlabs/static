@@ -443,7 +443,7 @@ function builtInPlugin(static) {
         "  var socket = io.connect('http://' + window.location.hostname);",
         "  socket.on('reload', function(data) {",
         "    if (shouldExecute(data)) {",
-        "      window.location.reload();",
+        "      setTimeout(function() { window.location.reload(); }, 1000);",
         "    }",
         "  });",
         "  socket.on('destroy', function(data) {",
