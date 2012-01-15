@@ -295,7 +295,7 @@ _.extend(File.prototype, {
           } else {
             var finish = function() {
               window.$('script[src="' + jquery_path + '"]').remove();
-              file.buffer = window.document.doctype + domToHtml(window.document, true, true);
+              file.buffer = window.document.doctype + domToHtml(window.document, true);
               next();
             };
             try {
