@@ -284,7 +284,7 @@ _.extend(File.prototype, {
   },
   $: function(callback) {
     this.on('write', function(file, next) {
-      var jquery_path = path.join(__dirname, 'jquery.js');
+      var jquery_path = path.join(__dirname, 'lib', 'jquery.js');
       try {
         jsdom.env(file.buffer.toString(), [
           jquery_path
