@@ -314,7 +314,7 @@ _.extend(File.prototype, {
           }
         });
       } catch(e) {
-        console.log(e);
+        console.log(e.stack || e);
         next();
       }
     });
@@ -349,7 +349,7 @@ _.extend(File.prototype, {
         var template = handlebars.compile(fs.readFileSync(filename).toString());
         return template(_.extend({}, this._scope, options || {}));
       } catch (e) {
-        console.log(e);
+        console.log(e.stack || e);
         return '';
       }
     } else {
@@ -361,7 +361,7 @@ _.extend(File.prototype, {
       var template = handlebars.compile(contents);
       return template(_.extend({}, this._scope, options || {}));
     } catch(e) {
-      console.log(e);
+      console.log(e.stack || e);
       return '';
     }
   }
@@ -401,7 +401,7 @@ var transforms = {
       var template = handlebars.compile(buffer.toString());
       next(template(this._scope));
     } catch(e) {
-      console.log(e);
+      console.log(e.stack || e);
       next('');
     }
   },
