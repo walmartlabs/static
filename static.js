@@ -208,6 +208,7 @@ var File = function(static, source) {
   this._writeTargets = [];
   this._dependencies = [];
   this.setMaxListeners(100);
+  this.update = _.debounce(_.bind(this.update, this), 1000);
 };
 File.prototype = new process.EventEmitter();
 _.extend(File.prototype, {
