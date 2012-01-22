@@ -1,149 +1,34 @@
-<!DOCTYPE html><html>  <head>    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Static</title>
-    <script type="text/javascript" src="scripts/whitespace.js"></script>
-    <link rel="stylesheet" href="styles/style.css">
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <title>Static</title>
+  
+  <script type="text/javascript" src="scripts/whitespace.js"></script>
+  <link rel="stylesheet" href="styles/style.css">
 </head>
-  <body>    <div id="sidebar" class="interface">
-      <h2>
-        <a href="#overview">Overview</a>
-      </h2>
-      <ul>
-        <li>
-          <a href="#overview-github">Github Pages</a>
-        </li>
-      </ul>
-      <h2>
-        <a href="#project">Project Structure</a>
-      </h2>
-      <ul>
-        <li>
-          <a href="#project structure-assets">Assets</a>
-        </li>
-        <li>
-          <a href="#project structure-includes">Includes</a>
-        </li>
-        <li>
-          <a href="#project structure-pages">Pages</a>
-        </li>
-        <li>
-          <a href="#project structure-scripts">Scripts</a>
-        </li>
-        <li>
-          <a href="#project structure-styles">Styles</a>
-        </li>
-        <li>
-          <a href="#project structure-package.json">package.json</a>
-        </li>
-        <li>
-          <a href="#project structure-index.js">index.js</a>
-        </li>
-      </ul>
-      <h2>
-        <a href="#static">Static</a>
-      </h2>
-      <ul>
-        <li>
-          <a href="#static-file">file </a>
-        </li>
-        <li>
-          <a href="#static-helper">helper </a>
-        </li>
-        <li>
-          <a href="#static-path">path </a>
-        </li>
-        <li>
-          <a href="#static-package">package </a>
-        </li>
-      </ul>
-      <h2>
-        <a href="#file">File</a>
-      </h2>
-      <ul>
-        <li>
-          <a href="#file-write">write </a>
-        </li>
-        <li>
-          <a href="#file-$">$ </a>
-        </li>
-        <li>
-          <a href="#file-set">set </a>
-        </li>
-        <li>
-          <a href="#file-render">render </a>
-        </li>
-        <li>
-          <a href="#file-transform">transform </a>
-        </li>
-        <li>
-          <a href="#file-changeextensionto">changeExtensionTo </a>
-        </li>
-      </ul>
-      <h2>
-        <a href="#helpers">Helpers</a>
-      </h2>
-      <ul>
-        <li>
-          <a href="#helpers-live-reload">live-reload </a>
-        </li>
-        <li>
-          <a href="#helpers-set">set </a>
-        </li>
-        <li>
-          <a href="#helpers-include">include </a>
-        </li>
-        <li>
-          <a href="#helpers-styles">styles </a>
-        </li>
-        <li>
-          <a href="#helpers-style">style </a>
-        </li>
-        <li>
-          <a href="#helpers-scripts">scripts </a>
-        </li>
-        <li>
-          <a href="#helpers-script">script </a>
-        </li>
-        <li>
-          <a href="#helpers-root">root </a>
-        </li>
-        <li>
-          <a href="#helpers-target">target </a>
-        </li>
-      </ul>
-      <h2>
-        <a href="#recipes">Recipes</a>
-      </h2>
-      <ul>
-        <li>
-          <a href="#recipes-page">Page Templates</a>
-        </li>
-      </ul>
-    </div>
-    <div class="container">      <h2 id="overview">Overview</h2>
-      <p>Generate static sites with         <a href="http://daringfireball.net/projects/markdown/">Markdown</a>
-,         <a href="http://www.handlebarsjs.com/">Handlebars</a>
- and         <a href="http://learnboost.github.com/stylus/">Stylus</a>
-. Live previews with         <a href="http://socket.io/">socket.io</a>
-.</p>
-      <pre>
-        <code>npm install -g static
-static create test</code>
-      </pre>
-      <p>This bootstraps a static project inside of a folder named "test". You can then use the         <em>static</em>
- command to watch this source folder and publish the generated site to an arbitrary number of target folders. Specify a port number to start an express server which will trigger automatic page reloads when files inside the source directory change.</p>
-      <pre>
-        <code>static ./test ./test-generated 8000    </code>
-      </pre>
-      <p>This page is generated with Static,         <a href="https://github.com/walmartlabs/static/tree/docs">view the source here</a>
-.</p>
-      <h3 id="overview-github">Github Pages</h3>
-      <p>To use static with         <a href="http://pages.github.com/">GitHub Pages</a>
- create a new static project in a directory named         <em>docs</em>
- inside your repo, and a         <em>gh-pages</em>
- branch in separate directory locally.</p>
-      <pre>
-        <code># create a docs folder containing a new static project
+<body>
+  <div id="sidebar" class="interface"><h2><a href="#overview">Overview</a></h2><ul><li><a href="#overview-github">Github Pages</a></li></ul><h2><a href="#project">Project Structure</a></h2><ul><li><a href="#project structure-assets">Assets</a></li><li><a href="#project structure-includes">Includes</a></li><li><a href="#project structure-pages">Pages</a></li><li><a href="#project structure-scripts">Scripts</a></li><li><a href="#project structure-styles">Styles</a></li><li><a href="#project structure-package.json">package.json</a></li><li><a href="#project structure-index.js">index.js</a></li></ul><h2><a href="#static">Static</a></h2><ul><li><a href="#static-file">file </a></li><li><a href="#static-helper">helper </a></li><li><a href="#static-path">path </a></li><li><a href="#static-package">package </a></li></ul><h2><a href="#file">File</a></h2><ul><li><a href="#file-write">write </a></li><li><a href="#file-$">$ </a></li><li><a href="#file-set">set </a></li><li><a href="#file-render">render </a></li><li><a href="#file-transform">transform </a></li><li><a href="#file-changeextensionto">changeExtensionTo </a></li></ul><h2><a href="#helpers">Helpers</a></h2><ul><li><a href="#helpers-live-reload">live-reload </a></li><li><a href="#helpers-set">set </a></li><li><a href="#helpers-include">include </a></li><li><a href="#helpers-styles">styles </a></li><li><a href="#helpers-style">style </a></li><li><a href="#helpers-scripts">scripts </a></li><li><a href="#helpers-script">script </a></li><li><a href="#helpers-root">root </a></li><li><a href="#helpers-target">target </a></li></ul><h2><a href="#recipes">Recipes</a></h2><ul><li><a href="#recipes-page">Page Templates</a></li></ul></div>
+  <div class="container">
+    <h2 id="overview">Overview</h2>
+
+<p>Generate static sites with <a href="http://daringfireball.net/projects/markdown/">Markdown</a>, <a href="http://www.handlebarsjs.com/">Handlebars</a> and <a href="http://learnboost.github.com/stylus/">Stylus</a>. Live previews with <a href="http://socket.io/">socket.io</a>.</p>
+
+<pre><code>npm install -g static
+static create test</code></pre>
+
+<p>This bootstraps a static project inside of a folder named "test". You can then use the <em>static</em> command to watch this source folder and publish the generated site to an arbitrary number of target folders. Specify a port number to start an express server which will trigger automatic page reloads when files inside the source directory change.</p>
+
+<pre><code>static ./test ./test-generated 8000    </code></pre>
+
+<p>This page is generated with Static, <a href="https://github.com/walmartlabs/static/tree/master/docs">view the source here</a>.</p>
+
+<h3 id="overview-github">Github Pages</h3>
+
+<p>To use static with <a href="http://pages.github.com/">GitHub Pages</a> create a new static project in a directory named <em>docs</em> inside your repo, and a <em>gh-pages</em> branch in separate directory locally.</p>
+
+<pre><code># create a docs folder containing a new static project
 cd repo
 static create docs
 git add docs
@@ -158,53 +43,51 @@ git symbolic-ref HEAD refs/heads/gh-pages
 git remote add origin git@github.com:username/repo.git
 git add *
 git commit -m "added generated docs"
-git push origin gh-pages</code>
-      </pre>
-      <p>View your changes locally on port 8000 and when you're happy with the changes commit and push the         <em>gh-pages</em>
- branches to GitHub.</p>
-      <h2 id="project">Project Structure</h2>
-      <h3 id="project structure-assets">Assets</h3>
-      <p>Put any media files such as images, movies, etc in here. They will be copied to the         <em>assets</em>
- folder in the generated site as is.</p>
-      <h3 id="project structure-includes">Includes</h3>
-      <p>Any files in this directory can be included into your pages using the         <em>include</em>
- helper, specifying the file extension is not necessary. If the include is a handlebars file, you can pass arbitrary key, value pairs.</p>
-      <pre>
-        <code>{{include "header" key="value"}}
+git push origin gh-pages</code></pre>
+
+<p>View your changes locally on port 8000 and when you're happy with the changes commit and push the <em>gh-pages</em> branches to GitHub.</p>
+
+<h2 id="project">Project Structure</h2>
+
+<h3 id="project structure-assets">Assets</h3>
+
+<p>Put any media files such as images, movies, etc in here. They will be copied to the <em>assets</em> folder in the generated site as is.</p>
+
+<h3 id="project structure-includes">Includes</h3>
+
+<p>Any files in this directory can be included into your pages using the <em>include</em> helper, specifying the file extension is not necessary. If the include is a handlebars file, you can pass arbitrary key, value pairs.</p>
+
+<pre><code>{{include "header" key="value"}}
 &lt;p&gt;Content&lt;/p&gt;
-{{include "footer"}}</code>
-      </pre>
-      <h3 id="project structure-pages">Pages</h3>
-      <p>Any         <em>.html</em>
-,         <em>.md</em>
- or         <em>.handlebars</em>
- files here will be processed, have their extension changed to         <em>.html</em>
-, and will be copied to the root folder of your generated site, for example:         <em>source/pages/index.handlebars</em>
- -&gt;         <em>target/index.html</em>
-      </p>
-      <h3 id="project structure-scripts">Scripts</h3>
-      <p>Javascript files, will be copied to the         <em>scripts</em>
- folder of the generated site as is. You can include all scripts or a single script inside a handlebars template with one of the helpers:</p>
-      <pre>
-        <code>{{script src}}
-{{scripts}}</code>
-      </pre>
-      <h3 id="project structure-styles">Styles</h3>
-      <p>Stylus or CSS files, will be processed and copied to the         <em>styles</em>
- folder of the generated site. You can include all stylesheets or a single stylesheet inside a handlebars template with one of the helpers. You can pass arbitrary HTML attributes to either helper.</p>
-      <pre>
-        <code>{{style href}}
-{{styles media="screen"}}</code>
-      </pre>
-      <h3 id="project structure-package.json">package.json</h3>
-      <p>Any keys specified here will be available inside of your handlebars templates.</p>
-      <h3 id="project structure-index.js">index.js</h3>
-      <p>Most of the behaviors described so far are all specified in         <a href="https://github.com/walmartlabs/static/blob/bootstrap/index.js">index.js</a>
-. You can specify additional behaviors or modify the output of your pages with jQuery by modifying this file.         <em>index.js</em>
-  must export a single function which will receive a         <em>static</em>
- object.</p>
-      <pre>
-        <code>module.exports = function(static) {
+{{include "footer"}}</code></pre>
+
+<h3 id="project structure-pages">Pages</h3>
+
+<p>Any <em>.html</em>, <em>.md</em> or <em>.handlebars</em> files here will be processed, have their extension changed to <em>.html</em>, and will be copied to the root folder of your generated site, for example: <em>source/pages/index.handlebars</em> -&gt; <em>target/index.html</em></p>
+
+<h3 id="project structure-scripts">Scripts</h3>
+
+<p>Javascript files, will be copied to the <em>scripts</em> folder of the generated site as is. You can include all scripts or a single script inside a handlebars template with one of the helpers:</p>
+
+<pre><code>{{script src}}
+{{scripts}}</code></pre>
+
+<h3 id="project structure-styles">Styles</h3>
+
+<p>Stylus or CSS files, will be processed and copied to the <em>styles</em> folder of the generated site. You can include all stylesheets or a single stylesheet inside a handlebars template with one of the helpers. You can pass arbitrary HTML attributes to either helper.</p>
+
+<pre><code>{{style href}}
+{{styles media="screen"}}</code></pre>
+
+<h3 id="project structure-package.json">package.json</h3>
+
+<p>Any keys specified here will be available inside of your handlebars templates.</p>
+
+<h3 id="project structure-index.js">index.js</h3>
+
+<p>Most of the behaviors described so far are all specified in <a href="https://github.com/walmartlabs/static/blob/bootstrap/index.js">index.js</a>. You can specify additional behaviors or modify the output of your pages with jQuery by modifying this file. <em>index.js</em>  must export a single function which will receive a <em>static</em> object.</p>
+
+<pre><code>module.exports = function(static) {
   static.file('index.handlebars', function(file) {
     file.$(function(window) {
       //add extra emphasis to all em tags
@@ -213,155 +96,153 @@ git push origin gh-pages</code>
       });
     });
   });
-}</code>
-      </pre>
-      <p>The rest of the documentation details the API available inside of a         <em>index.js</em>
-.</p>
-      <h2 id="static">Static</h2>
-      <h3 id="static-file">file         <em>static.file(pattern, callback)</em>
-      </h3>
-      <p>Select files in the source project to modify or copy.         <em>pattern</em>
- can be a relative path as a string or a regular expression. Callback will be called for each matching file with the file object as it's only argument. This example from the         <em>index.js</em>
- plugin selects markdown files in any directory:</p>
-      <pre>
-        <code>static.file(/\.(md|markdown)$/, function(file) {
+}</code></pre>
+
+<p>The rest of the documentation details the API available inside of a <em>index.js</em>.</p>
+
+<h2 id="static">Static</h2>
+
+<h3 id="static-file">file <em>static.file(pattern, callback)</em></h3>
+
+<p>Select files in the source project to modify or copy. <em>pattern</em> can be a relative path as a string or a regular expression. Callback will be called for each matching file with the file object as it's only argument. This example from the <em>index.js</em> plugin selects markdown files in any directory:</p>
+
+<pre><code>static.file(/\.(md|markdown)$/, function(file) {
   file.transform('markdown');
   file.changeExtensionTo('html');
-});</code>
-      </pre>
-      <h3 id="static-helper">helper         <em>static.helper(key, callback)</em>
-      </h3>
-      <p>Register a new handlebars helper. The callback will recieve the current file object, any ordered arguments passed followed by an an options hash (accessed via         <em>options.hash</em>
-) if any attributes were passed to the helper.</p>
-      <pre>
-        <code>static.helper('bold', function(file, content, options) {
+});</code></pre>
+
+<h3 id="static-helper">helper <em>static.helper(key, callback)</em></h3>
+
+<p>Register a new handlebars helper. The callback will recieve the current file object, any ordered arguments passed followed by an an options hash (accessed via <em>options.hash</em>) if any attributes were passed to the helper.</p>
+
+<pre><code>static.helper('bold', function(file, content, options) {
   return '&lt;b&gt;' + content + '&lt;/b&gt;';
 }); 
 
-{{bold "Text"}}</code>
-      </pre>
-      <h3 id="static-path">path         <em>static.path</em>
-      </h3>
-      <p>Path to the source project.</p>
-      <h3 id="static-package">package         <em>static.package</em>
-      </h3>
-      <p>Parsed         <em>package.json</em>
-      </p>
-      <h2 id="file">File</h2>
-      <h3 id="file-write">write         <em>file.write(target_path)</em>
-      </h3>
-      <p>Write the file to a given path in the generated site.         <em>target_path</em>
- should be relative and only a directory name. This example from         <em>index.js</em>
- copies all asset files:</p>
-      <pre>
-        <code>static.file(/^assets\//, function(file) {
+{{bold "Text"}}</code></pre>
+
+<h3 id="static-path">path <em>static.path</em></h3>
+
+<p>Path to the source project.</p>
+
+<h3 id="static-package">package <em>static.package</em></h3>
+
+<p>Parsed <em>package.json</em></p>
+
+<h2 id="file">File</h2>
+
+<h3 id="file-write">write <em>file.write(target_path)</em></h3>
+
+<p>Write the file to a given path in the generated site. <em>target_path</em> should be relative and only a directory name. This example from <em>index.js</em> copies all asset files:</p>
+
+<pre><code>static.file(/^assets\//, function(file) {
   file.write('assets');
-});</code>
-      </pre>
-      <h3 id="file-$">$         <em>file.$(callback)</em>
-      </h3>
-      <p>Loads jQuery then calls callback with a DOM window object representing the current file and a         <em>next</em>
- function that must be called. The DOM tree will then be serialized back to a string after callback is called. The table of contents for this document is created by scanning all h1, h2 and h3 tags then injecting HTML into the DOM.</p>
-      <pre>
-        <code>static.file('index.handlebars', function(file) {
+});</code></pre>
+
+<h3 id="file-$">$ <em>file.$(callback)</em></h3>
+
+<p>Loads jQuery then calls callback with a DOM window object representing the current file and a <em>next</em> function that must be called. The DOM tree will then be serialized back to a string after callback is called. The table of contents for this document is created by scanning all h1, h2 and h3 tags then injecting HTML into the DOM.</p>
+
+<pre><code>static.file('index.handlebars', function(file) {
   file.$(function(window, next) {
     window.$ === window.jQuery;
     next();
   });
-});</code>
-      </pre>
-      <p>The callback is called after the file has been processed with Markdown and Handlebars.</p>
-      <h3 id="file-set">set         <em>file.set(key, value)</em>
-      </h3>
-      <p>Sets a value to be made available in all handlebar templates rendered by the file (the file itself + includes).</p>
-      <h3 id="file-render">render         <em>file.render(filename [,context])</em>
-      </h3>
-      <p>Render a Markdown or Handlebars file, returning the contents as a string.         <em>filename</em>
- is a relative path in the source directory,         <em>context</em>
- is the context that will be available if the file is handlebars template.</p>
-      <pre>
-        <code>var output = file.render('test.handlebars', {key: 'value'});</code>
-      </pre>
-      <h3 id="file-transform">transform         <em>file.transform(callback)</em>
-      </h3>
-      <p>Transform a file, currently availble transforms are         <em>handlebars</em>
-,         <em>markdown</em>
- and         <em>stylus</em>
-.</p>
-      <pre>
-        <code>static.file(/\.styl$/, function(file) {
+});</code></pre>
+
+<p>The callback is called after the file has been processed with Markdown and Handlebars.</p>
+
+<h3 id="file-set">set <em>file.set(key, value)</em></h3>
+
+<p>Sets a value to be made available in all handlebar templates rendered by the file (the file itself + includes).</p>
+
+<h3 id="file-render">render <em>file.render(filename [,context])</em></h3>
+
+<p>Render a Markdown or Handlebars file, returning the contents as a string. <em>filename</em> is a relative path in the source directory, <em>context</em> is the context that will be available if the file is handlebars template.</p>
+
+<pre><code>var output = file.render('test.handlebars', {key: 'value'});</code></pre>
+
+<h3 id="file-transform">transform <em>file.transform(callback)</em></h3>
+
+<p>Transform a file, currently availble transforms are <em>handlebars</em>, <em>markdown</em> and <em>stylus</em>.</p>
+
+<pre><code>static.file(/\.styl$/, function(file) {
   file.transform('stylus');
   file.changeExtensionTo('css');
-});</code>
-      </pre>
-      <p>Arbitrary transforms can be supplied by passing a callback that receives the buffer of the file and a callback to call when the transformation is complete:</p>
-      <pre>
-        <code>static.file(/\.txt$/, function(file) {
+});</code></pre>
+
+<p>Arbitrary transforms can be supplied by passing a callback that receives the buffer of the file and a callback to call when the transformation is complete:</p>
+
+<pre><code>static.file(/\.txt$/, function(file) {
   file.transform(function(buffer, next) {
     next(buffer.toLowerCase());
   });
-});</code>
-      </pre>
-      <h3 id="file-changeextensionto">changeExtensionTo         <em>file.changeExtensionTo(extension)</em>
-      </h3>
-      <p>Change the extension of the file when it is written to a target. Does not modify the extension of the source file.</p>
-      <h2 id="helpers">Helpers</h2>
-      <h3 id="helpers-live-reload">live-reload         <em>{{live-reload}}</em>
-      </h3>
-      <p>Put this inside of your &lt;head&gt; tag. Generates the JavaScript needed for live reload functionality. The         <em>styles</em>
-,         <em>style</em>
-,         <em>scripts</em>
- and         <em>script</em>
- helpers should all be used when using live-reload instead of plain HTML as it will ensure that the current page reloads when dependent stylesheets or scripts change.</p>
-      <h3 id="helpers-set">set         <em>{{set key="value"}}</em>
-      </h3>
-      <p>Set a value in the current file that will be made available to any other handlebars templates the current file includes.</p>
-      <h3 id="helpers-include">include         <em>{{include filename [key="value"]}}</em>
-      </h3>
-      <p>Include another handlebars, markdown or html file inside of the         <em>includes</em>
- directory. Arbitrary values can be passed to the file if it is a handlebars template.</p>
-      <h3 id="helpers-styles">styles         <em>{{styles [key="value"]}}</em>
-      </h3>
-      <p>Generate style tags for all stylesheets inside of the         <em>styles</em>
- folder. Arbitrary HTML attributes can be passed.</p>
-      <h3 id="helpers-style">style         <em>{{style [key="value"]}}</em>
-      </h3>
-      <p>Generate a style tag for a single stylesheet.</p>
-      <h3 id="helpers-scripts">scripts         <em>{{scripts [key="value"]}}</em>
-      </h3>
-      <p>Generate script tags for all scripts inside of the         <em>scripts</em>
- folder. Arbitrary HTML attributes can be passed.</p>
-      <h3 id="helpers-script">script         <em>{{script [key="value"]}}</em>
-      </h3>
-      <p>Generate a script tag for a single script.</p>
-      <h3 id="helpers-root">root         <em>{{root}}</em>
-      </h3>
-      <p>Path to the root of the site from the current page.</p>
-      <h3 id="helpers-target">target         <em>{{target}}</em>
-      </h3>
-      <p>The current filename that is being written.</p>
-      <h2 id="recipes">Recipes</h2>
-      <h3 id="recipes-page">Page Templates</h3>
-      <p>The default project assumes each page will         <em>include</em>
- a header and a footer. You could instead insert the content of each page into a template:</p>
-      <pre>
-        <code>static.file(/^pages\//, function(file) {
+});</code></pre>
+
+<h3 id="file-changeextensionto">changeExtensionTo <em>file.changeExtensionTo(extension)</em></h3>
+
+<p>Change the extension of the file when it is written to a target. Does not modify the extension of the source file.</p>
+
+<h2 id="helpers">Helpers</h2>
+
+<h3 id="helpers-live-reload">live-reload <em>{{live-reload}}</em></h3>
+
+<p>Put this inside of your &lt;head&gt; tag. Generates the JavaScript needed for live reload functionality. The <em>styles</em>, <em>style</em>, <em>scripts</em> and <em>script</em> helpers should all be used when using live-reload instead of plain HTML as it will ensure that the current page reloads when dependent stylesheets or scripts change.</p>
+
+<h3 id="helpers-set">set <em>{{set key="value"}}</em></h3>
+
+<p>Set a value in the current file that will be made available to any other handlebars templates the current file includes.</p>
+
+<h3 id="helpers-include">include <em>{{include filename [key="value"]}}</em></h3>
+
+<p>Include another handlebars, markdown or html file inside of the <em>includes</em> directory. Arbitrary values can be passed to the file if it is a handlebars template.</p>
+
+<h3 id="helpers-styles">styles <em>{{styles [key="value"]}}</em></h3>
+
+<p>Generate style tags for all stylesheets inside of the <em>styles</em> folder. Arbitrary HTML attributes can be passed.</p>
+
+<h3 id="helpers-style">style <em>{{style [key="value"]}}</em></h3>
+
+<p>Generate a style tag for a single stylesheet.</p>
+
+<h3 id="helpers-scripts">scripts <em>{{scripts [key="value"]}}</em></h3>
+
+<p>Generate script tags for all scripts inside of the <em>scripts</em> folder. Arbitrary HTML attributes can be passed.</p>
+
+<h3 id="helpers-script">script <em>{{script [key="value"]}}</em></h3>
+
+<p>Generate a script tag for a single script.</p>
+
+<h3 id="helpers-root">root <em>{{root}}</em></h3>
+
+<p>Path to the root of the site from the current page.</p>
+
+<h3 id="helpers-target">target <em>{{target}}</em></h3>
+
+<p>The current filename that is being written.</p>
+
+<h2 id="recipes">Recipes</h2>
+
+<h3 id="recipes-page">Page Templates</h3>
+
+<p>The default project assumes each page will <em>include</em> a header and a footer. You could instead insert the content of each page into a template:</p>
+
+<pre><code>static.file(/^pages\//, function(file) {
   file.write('.');
   file.transform(function(buffer, next) {
     next(file.render('templates/index.handlebars', {
       yield: buffer
     }));
   });
-});</code>
-      </pre>
-      <p>Inside of templates/index.handlebars:</p>
-      <pre>
-        <code>&lt;html&gt;
+});</code></pre>
+
+<p>Inside of templates/index.handlebars:</p>
+
+<pre><code>&lt;html&gt;
   &lt;body&gt;
     {{{yield}}}
   &lt;/body&gt;
-&lt;/html&gt;</code>
-      </pre>
-</div>
+&lt;/html&gt;</code></pre>
+  </div>
 </body>
 </html>
