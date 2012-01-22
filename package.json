@@ -9,8 +9,17 @@
     "url": "git://github.com/walmartlabs/static.git"
   },
   "bin": {
-    "static": "./bin/static"
+    "static": "bin/static"
   },
+  "files": [
+    "bin",
+    "docs",
+    "lib",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "static.js"
+  ],
   "main": "static.js",
   "license": "MIT",
   "homepage": "http://walmartlabs.github.com/static",
