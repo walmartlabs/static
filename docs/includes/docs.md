@@ -10,7 +10,7 @@ This bootstraps a static project inside of a folder named "test". You can then u
 
     static ./test ./test-generated 8000    
 
-This page is generated with Static, [view the source here](https://github.com/walmartlabs/static/tree/docs).
+This page is generated with Static, [view the source here](https://github.com/walmartlabs/static/tree/master/docs).
 
 ### Github Pages
 
