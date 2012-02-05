@@ -14,7 +14,8 @@ var _ = require('underscore'),
     path = require('path'),
     stylus = require('stylus'),
     watch = require('watch'),
-    wrench = require('wrench');
+    wrench = require('wrench'),
+    documentup = require('./lib/documentup');
 
 //for handlebars helpers
 var currentFile = false;
@@ -265,13 +266,13 @@ _.extend(File.prototype, {
   unset: function(key) {
     delete this._scope[key];
   },
-  transform: function(name) {
+  transform: function(name, options) {
     this.on('read', function(file, next) {
       if (typeof name === 'string') {
         transforms[name].call(file, file.buffer, function(buffer) {
           file.buffer = buffer;
           next();
-        });
+        }, options);
       } else {
         name.call(file, file.buffer, function(buffer) {
           file.buffer = buffer;
@@ -392,7 +393,15 @@ function guessFilename(name) {
   });
 }
 
+
 var transforms = {
+  documentup: function(buffer, next, options) {
+    documentup(_.extend({
+      content: buffer.toString()
+    }, options || {}), function(response) {
+      next(response);
+    });
+  },
   markdown: function(buffer, next) {
     next(markdown.toHTML(buffer.toString()));
   },
