@@ -22,6 +22,12 @@ var currentFile = false;
 
 var Static = function(working_path) {
   this.path = working_path;
+  if (this.path.match(/\.(js|coffee)$/)) {
+    this.recipe = path.basename(this.path);
+    this.path = path.dirname(this.path);
+  } else {
+    this.recipe = 'index.js';
+  }
   if (!this.path.match(/^(\/|\.\/?)/)) {
     this.path = './' + this.path;
   }
@@ -60,9 +66,10 @@ _.extend(Static.prototype, {
       if (typeof pattern === 'string') {
         pattern = pattern.replace(/^\//, '');
       }
-      if ((typeof pattern === 'string' && fragment === pattern) || fragment.match(pattern)) {
-        file._lastPattern = pattern;
-        callback.call(this, file);
+      if ((typeof pattern === 'string' && fragment === pattern) ||
+        (typeof pattern !== 'string' && fragment.match(pattern))) {
+          file._lastPattern = pattern;
+          callback.call(this, file);
       }
     }, this);
     for (var filename in this.files) {
@@ -75,18 +82,18 @@ _.extend(Static.prototype, {
     this.emit('file', this.files[filename]);
     return this.files[filename];
   },
-  loadPlugins: function() {
-    builtInPlugin.call(this, this);
-    var plugin_path = path.join(process.cwd(), this.path, 'index.js');
-    var plugin = require(plugin_path);
-    plugin(this);
+  loadRecipe: function() {
+    builtInRecipe.call(this, this);
+    var recipe_path = path.join(process.cwd(), this.path, this.recipe);
+    recipe = require(recipe_path);
+    recipe(this);
   },
   watch: function(callback) {
     if (this._watching) {
       return false;
     }
     this._watching = true;
-    this.loadPlugins();
+    this.loadRecipe();
     watch.watchTree(this.path, _.bind(function (filename, curr, prev) {
       if (typeof filename == "object" && prev === null && curr === null) {
         for (var f in filename) {
@@ -143,11 +150,14 @@ _.extend(Static.prototype, {
     console.log('static + express listening on port ' + port);
   },
   helper: function(name, callback) {
-    handlebars.registerHelper(name, _.bind(function() {
+    var bound_callback = _.bind(function() {
       var output = callback.apply(this, [currentFile].concat(_.toArray(arguments)));
       return new handlebars.SafeString(output || '');
-    }, this));
-  }
+    }, this);
+    handlebars.registerHelper(name, bound_callback);
+    this.helpers[name] = bound_callback;
+  },
+  helpers: {}
 });
 
 function isDotFile(filename) {
@@ -281,8 +291,17 @@ _.extend(File.prototype, {
       }
     });
   },
+  rename: function(name) {
+    this.name = name;
+  },
   changeExtensionTo: function(extension) {
     this.name = this.name.replace(/\.[a-zA-Z]+$/, '.' + extension);
+  },
+  save: function(name) {
+    if (name) {
+      this.name = name;
+    }
+    this.write('.');
   },
   $: function(callback) {
     this.on('write', function(file, next) {
@@ -427,7 +446,7 @@ var transforms = {
   }
 };
 
-function builtInPlugin(static) {
+function builtInRecipe(static) {
   
   //add {{set key="value"}} helper
   static.helper('set', function(file, options) {
