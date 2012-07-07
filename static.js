@@ -408,7 +408,7 @@ function guessFilename(name) {
     } catch (e) {
       return false;
     }
-    return path.existsSync(guess);
+    return fs.existsSync(guess);
   });
 }
 
