@@ -1,10 +1,10 @@
 var handlebars = require('handlebars'),
-	async = require('async'),
-	jsdom = require('jsdom'),
-	marked = require('marked'),
-	path = require('path'),
-	fs = require('fs'),
-	_ = require('underscore'),
+  async = require('async'),
+  jsdom = require('jsdom'),
+  marked = require('marked'),
+  path = require('path'),
+  fs = require('fs'),
+  _ = require('underscore'),
   highlight = require('highlight.js'),
   domToHTML = require('./lib/domtohtml.js').domToHtml;
 
@@ -21,7 +21,10 @@ var jqueryPath = './lib/jquery.js',
     markdownCallbacks = [];
 
 var transforms = {
-  md: function(buffer, complete) {
+  html: function(buffer, complete, options) {
+    return complete(buffer.toString());
+  },
+  md: function(buffer, complete, options) {
     var tokens = marked.lexer(buffer.toString(), {
       gfm: config.gfm,
       highlight: config.highlight
@@ -38,20 +41,36 @@ var transforms = {
       complete(html);
     });    
   },
-  hbs: function(buffer, complete) {
-    var output = handlebars.compile(buffer.toString())({});
-    async.series(_.map(asyncTolkens, function(data, tolken) {
-      return function(next) {
-        var args = data.args;
-        args.push(function(callbackOutput) {
-          output = output.replace(tolken, callbackOutput.toString());
-          next();
-        });
-        data.callback.apply(data.callback, args);
-      };
-    }), function() {
-      complete(output);
+  hbs: function(buffer, complete, options) {
+    var output = handlebars.compile(buffer.toString(), {
+      data: true
+    })({}, {
+      data: {
+        file: options.file
+      }
     });
+    var filteredAsyncTolkens = {};
+    _.each(asyncTolkens, function(data, tolken) {
+      if (data.file === options.file) {
+        filteredAsyncTolkens[tolken] = data;
+      }
+    });
+    if (!_.keys(filteredAsyncTolkens).length) {
+      complete(output);
+    } else {
+      async.series(_.map(filteredAsyncTolkens, function(data, tolken) {
+        return function(next) {
+          var args = data.args;
+          args.push(function(callbackOutput) {
+            output = output.replace(tolken, callbackOutput.toString());
+            next();
+          });
+          data.callback.apply(data.callback, args);
+        };
+      }), function() {
+        complete(output);
+      });
+    }
   }
 };
 
@@ -82,8 +101,10 @@ function removeOuterBodyTag(html) {
 handlebars.registerAsyncHelper = function(name, callback) {
   handlebars.registerHelper(name, function() {
     var tolken = String(new Date().getTime() + Math.random());
-    var args = _.toArray(arguments);
+    var args = _.toArray(arguments),
+        data = args[args.length - 1].data;
     asyncTolkens[tolken] = {
+      file: data.file,
       args: args,
       callback: callback
     };
@@ -91,13 +112,15 @@ handlebars.registerAsyncHelper = function(name, callback) {
   });
 };
 
-handlebars.registerHelper('require', function(file) {
-  require(path.join(process.cwd(), file))(module.exports);
+handlebars.registerHelper('require', function(file, options) {
+  var filePath = path.join(path.dirname(options.data.file), file);
+  require(filePath)(module.exports);
   return '';
 });
 
 handlebars.registerAsyncHelper('include', function(file, options, callback) {
-  transform(file, function(fileData) {
+  var filePath = path.join(path.dirname(options.data.file), file);
+  transform(filePath, function(fileData) {
     var selector = options.hash.select;
     if (selector) {
       $(fileData.toString(), function(window) {
@@ -123,7 +146,9 @@ function transform(source, callback) {
       return extension in transforms;
     }).map(function(extension) {
       return function(next) {
-        transforms[extension](data, next);
+        transforms[extension](data, next, {
+          file: source
+        });
       };
     });
     async.series(callbacks, callback);
