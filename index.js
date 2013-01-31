@@ -117,18 +117,18 @@ handlebars.registerAsyncHelper('include', function(file, options, callback) {
 
 function transform(source, callback) {
   fs.readFile(source, function(err, data) {
-  	if (err) {
-  	  throw err;
-  	}
-  	var extensions = source.split('/').pop().split('.');
-  	var callbacks = _.filter(extensions, function(extension) {
-  	  return extension in transforms;
-  	}).map(function(extension) {
+    if (err) {
+      throw err;
+    }
+    var extensions = source.split('/').pop().split('.');
+    var callbacks = _.filter(extensions, function(extension) {
+      return extension in transforms;
+    }).map(function(extension) {
       return function(next) {
-      	transforms[extension](data, next);
+        transforms[extension](data, next);
       };
-  	});
-  	async.series(callbacks, callback);
+    });
+    async.series(callbacks, callback);
   });
 }
 
