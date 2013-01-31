@@ -20,57 +20,63 @@ var jqueryPath = './lib/jquery.js',
     asyncTolkens = {},
     markdownCallbacks = [];
 
-var transforms = {
-  html: function(buffer, complete, context, data) {
-    return complete(buffer.toString());
-  },
-  md: function(buffer, complete, context, data) {
-    var tokens = marked.lexer(buffer.toString(), {
-      gfm: config.gfm,
-      highlight: config.highlight
-    });
-    var html = marked.parser(tokens);
-    async.series(_.map(markdownCallbacks, function(callback) {
-      return function(next) {
-        callback(html, function(modifiedHTML) {
-          html = modifiedHTML;
-          next();
-        });
-      }
-    }), function() {
-      complete(html);
-    });    
-  },
-  hbs: function(buffer, complete, context, data) {
-    var output = handlebars.compile(buffer.toString(), {
-      data: true
-    })(context, {
-      data: data
-    });
-    var filteredAsyncTolkens = {};
-    _.each(asyncTolkens, function(tolkenData, tolken) {
-      if (data.file === tolkenData.file) {
-        filteredAsyncTolkens[tolken] = tolkenData;
-      }
-    });
-    if (!_.keys(filteredAsyncTolkens).length) {
-      complete(output);
-    } else {
-      async.series(_.map(filteredAsyncTolkens, function(tolkenData, tolken) {
-        return function(next) {
-          var args = tolkenData.args;
-          args.push(function(callbackOutput) {
-            output = output.replace(tolken, callbackOutput.toString());
-            next();
-          });
-          tolkenData.callback.apply(tolkenData.callback, args);
-        };
-      }), function() {
-        complete(output);
+var transforms = {};
+
+function addTransform(name, callback) {
+  transforms[name] = callback;
+}
+
+addTransform('html', function(buffer, complete, context, data) {
+  return complete(buffer.toString());
+});
+
+addTransform('md', function(buffer, complete, context, data) {
+  var tokens = marked.lexer(buffer.toString(), {
+    gfm: config.gfm,
+    highlight: config.highlight
+  });
+  var html = marked.parser(tokens);
+  async.series(_.map(markdownCallbacks, function(callback) {
+    return function(next) {
+      callback(html, function(modifiedHTML) {
+        html = modifiedHTML;
+        next();
       });
     }
+  }), function() {
+    complete(html);
+  });    
+});
+
+addTransform('hbs', function(buffer, complete, context, data) {
+  var output = handlebars.compile(buffer.toString(), {
+    data: true
+  })(context, {
+    data: data
+  });
+  var filteredAsyncTolkens = {};
+  _.each(asyncTolkens, function(tolkenData, tolken) {
+    if (data.file === tolkenData.file) {
+      filteredAsyncTolkens[tolken] = tolkenData;
+    }
+  });
+  if (!_.keys(filteredAsyncTolkens).length) {
+    complete(output);
+  } else {
+    async.series(_.map(filteredAsyncTolkens, function(tolkenData, tolken) {
+      return function(next) {
+        var args = tolkenData.args;
+        args.push(function(callbackOutput) {
+          output = output.replace(tolken, callbackOutput.toString());
+          next();
+        });
+        tolkenData.callback.apply(tolkenData.callback, args);
+      };
+    }), function() {
+      complete(output);
+    });
   }
-};
+});
 
 function $(html, callback) {
   jsdom.env(html.toString(), [
@@ -190,5 +196,6 @@ module.exports = {
   handlebars: handlebars,
   $: $,
   modifyDocumentFragment: modifyDocumentFragment,
-  onMarkdown: onMarkdown
+  onMarkdown: onMarkdown,
+  addTransform: addTransform
 };

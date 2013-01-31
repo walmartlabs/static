@@ -112,6 +112,20 @@ Called anytime after `transform` transforms a markdown document. `callback` is c
       next(html);
     });
 
+### addTransform *static.addTransform(fileExtension, callback)*
+
+Transform files passed to *transform* based on file extension. `callback` recieves:
+- `buffer` - the file buffer
+- `callback` - to be called with the transformed buffer
+- `context` - context if transform was invoked from a handlebars helper
+- `data` - private handlebars data, also contains `file` which is a reference to the current file
+
+The `html` extension is a noop and is implemented as:
+
+    static.addTransform('html', function(buffer, next, context, data) {
+      next(buffer);
+    });
+
 ### config *static.config*
 
 Defaults to:
