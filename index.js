@@ -131,7 +131,7 @@ handlebars.registerAsyncHelper('include', function(file, options, callback) {
     } else {
       callback(fileData.toString());
     }
-  });
+  }, options.hash, options.data);
 });
 
 function transform(source, callback, options) {
