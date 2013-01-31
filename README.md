@@ -14,6 +14,32 @@ Markdown and Handlebars static site generator. Transforms files with `.hbs` and 
       fs.writeFile('target.html', buffer.toString());
     });
 
+## Grunt Interface
+
+Copy `grunt/static.js` to the `grunt` folder in your project, then add a `static` object to your grunt config.
+
+    {
+      static: {
+        require: ['helpers.js'],
+        build: {
+          'target.html': 'source.hbs.html',
+          'api.html': [
+            'header.hbs.html',
+            'README.md',
+            'footer.html'
+          ]
+        }
+      }
+    }
+
+`require` accepts an array of files to require before static runs, each file must export a function that will recieve a `static` object:
+
+    module.exports = function(static) {
+
+    };
+
+`build` accepts a hash of target file: source file pairs to process. If an array of source files is specified each one will be processed individually and concatenated.
+
 ## Example
 
 A handlebars file similar to this could be used to generate documentation from a README.md file:
