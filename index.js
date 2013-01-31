@@ -16,7 +16,9 @@ var config = {
   }
 };
 
-var jqueryPath = './lib/jquery.js';
+var jqueryPath = './lib/jquery.js',
+    asyncTolkens = {},
+    markdownCallbacks = [];
 
 var transforms = {
   md: function(buffer, complete) {
@@ -25,12 +27,16 @@ var transforms = {
       highlight: config.highlight
     });
     var html = marked.parser(tokens);
-    $(html, function($, window) {
-      if (config.addIdsToHeadings) {
-        addIdsToHeadings($);
+    async.series(_.map(markdownCallbacks, function(callback) {
+      return function(next) {
+        callback(html, function(modifiedHTML) {
+          html = modifiedHTML;
+          next();
+        });
       }
-      complete(removeOuterBodyTag(domToHTML(window.document.body, true)));
-    });
+    }), function() {
+      complete(html);
+    });    
   },
   hbs: function(buffer, complete) {
     var output = handlebars.compile(buffer.toString())({});
@@ -49,24 +55,7 @@ var transforms = {
   }
 };
 
-function addIdsToHeadings($) {
-  $('h1,h2,h3,h4,h5,h6').each(function() {
-    var text = $(this).html().split('<').shift();
-    var id = text.replace(/[^a-zA-Z0-9\_\-]/g, '').replace(/([a-z])([A-Z])/g, function() {
-      return arguments[1] + '-' + arguments[2].toLowerCase();
-    }).toLowerCase();
-    if (id.match(/^\s+$/) || !id) {
-      return;
-    }
-    $(this).attr('id', id);
-  });
-}
-
-function removeOuterBodyTag(html) {
-  return html.replace(/^\s*\<body\>/, '').replace(/\<\/body\>\s*$/, '');
-}
-
-function $(html, complete) {
+function $(html, callback) {
   jsdom.env(html.toString(), [
     jqueryPath
   ], function(errors, window) {
@@ -74,9 +63,20 @@ function $(html, complete) {
       console.log('$ error', errors);
       throw errors;
     } else {
-      complete(window.$, window);
+      callback(window);
     }
   });
+}
+
+function modifyDocumentFragment(html, callback, next) {
+  $(html, function(window) {
+    callback(window);
+    next(removeOuterBodyTag(domToHTML(window.document.body, true)));
+  });
+}
+
+function removeOuterBodyTag(html) {
+  return html.replace(/^\s*\<body\>/, '').replace(/\<\/body\>\s*$/, '');
 }
 
 handlebars.registerAsyncHelper = function(name, callback) {
@@ -91,8 +91,6 @@ handlebars.registerAsyncHelper = function(name, callback) {
   });
 };
 
-var asyncTolkens = {};
-
 handlebars.registerHelper('require', function(file) {
   require(path.join(process.cwd(), file))(module.exports);
   return '';
@@ -102,9 +100,9 @@ handlebars.registerAsyncHelper('include', function(file, options, callback) {
   transform(file, function(fileData) {
     var selector = options.hash.select;
     if (selector) {
-      $(fileData.toString(), function($) {
+      $(fileData.toString(), function(window) {
         var generatedHTML = '';
-        $(selector).each(function() {
+        window.$(selector).each(function() {
           generatedHTML += options.fn(this);
         });
         callback(generatedHTML);
@@ -132,9 +130,41 @@ function transform(source, callback) {
   });
 }
 
+function onMarkdown(callback) {
+  markdownCallbacks.push(callback);
+}
+
+onMarkdown(function(html, next) {
+  if (config.addIdsToHeadings) {
+    modifyDocumentFragment(html, function(window) {
+      if (config.addIdsToHeadings) {
+        addIdsToHeadings(window);
+      }
+    }, next);
+  } else {
+    next(html);
+  }
+});
+
+function addIdsToHeadings(window) {
+  var $ = window.$;
+  $('h1,h2,h3,h4,h5,h6').each(function() {
+    var text = $(this).html().split('<').shift();
+    var id = text.replace(/[^a-zA-Z0-9\_\-]/g, '').replace(/([a-z])([A-Z])/g, function() {
+      return arguments[1] + '-' + arguments[2].toLowerCase();
+    }).toLowerCase();
+    if (id.match(/^\s+$/) || !id) {
+      return;
+    }
+    $(this).attr('id', id);
+  });
+}
+
 module.exports = {
   config: config,
   transform: transform,
   handlebars: handlebars,
-  $: $
+  $: $,
+  modifyDocumentFragment: modifyDocumentFragment,
+  onMarkdown: onMarkdown
 };
