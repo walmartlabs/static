@@ -21,10 +21,10 @@ var jqueryPath = './lib/jquery.js',
     markdownCallbacks = [];
 
 var transforms = {
-  html: function(buffer, complete, options) {
+  html: function(buffer, complete, context, data) {
     return complete(buffer.toString());
   },
-  md: function(buffer, complete, options) {
+  md: function(buffer, complete, context, data) {
     var tokens = marked.lexer(buffer.toString(), {
       gfm: config.gfm,
       highlight: config.highlight
@@ -41,31 +41,29 @@ var transforms = {
       complete(html);
     });    
   },
-  hbs: function(buffer, complete, options) {
+  hbs: function(buffer, complete, context, data) {
     var output = handlebars.compile(buffer.toString(), {
       data: true
-    })({}, {
-      data: {
-        file: options.file
-      }
+    })(context, {
+      data: data
     });
     var filteredAsyncTolkens = {};
-    _.each(asyncTolkens, function(data, tolken) {
-      if (data.file === options.file) {
-        filteredAsyncTolkens[tolken] = data;
+    _.each(asyncTolkens, function(tolkenData, tolken) {
+      if (data.file === tolkenData.file) {
+        filteredAsyncTolkens[tolken] = tolkenData;
       }
     });
     if (!_.keys(filteredAsyncTolkens).length) {
       complete(output);
     } else {
-      async.series(_.map(filteredAsyncTolkens, function(data, tolken) {
+      async.series(_.map(filteredAsyncTolkens, function(tolkenData, tolken) {
         return function(next) {
-          var args = data.args;
+          var args = tolkenData.args;
           args.push(function(callbackOutput) {
             output = output.replace(tolken, callbackOutput.toString());
             next();
           });
-          data.callback.apply(data.callback, args);
+          tolkenData.callback.apply(tolkenData.callback, args);
         };
       }), function() {
         complete(output);
@@ -136,9 +134,10 @@ handlebars.registerAsyncHelper('include', function(file, options, callback) {
   });
 });
 
-function transform(source, callback) {
+function transform(source, callback, options) {
   fs.readFile(source, function(err, data) {
     if (err) {
+      console.trace();
       throw err;
     }
     var extensions = source.split('/').pop().split('.');
@@ -146,7 +145,7 @@ function transform(source, callback) {
       return extension in transforms;
     }).map(function(extension) {
       return function(next) {
-        transforms[extension](data, next, {
+        transforms[extension](data, next, options || {}, {
           file: source
         });
       };
