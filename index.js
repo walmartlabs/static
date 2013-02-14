@@ -180,7 +180,7 @@ function addIdsToHeadings(window) {
   var $ = window.$;
   $('h1,h2,h3,h4,h5,h6').each(function() {
     var text = $(this).html().split('<').shift();
-    var id = text.replace(/[^a-zA-Z0-9\_\-]/g, '').replace(/([a-z])([A-Z])/g, function() {
+    var id = text.replace(/[\s]+/g, '-').replace(/([a-z])([A-Z])/g, function() {
       return arguments[1] + '-' + arguments[2].toLowerCase();
     }).toLowerCase();
     if (id.match(/^\s+$/) || !id) {
