@@ -31,11 +31,10 @@ addTransform('html', function(buffer, complete, context, data) {
 });
 
 addTransform('md', function(buffer, complete, context, data) {
-  var tokens = marked.lexer(buffer.toString(), {
+  var html = marked(buffer.toString(), {
     gfm: config.gfm,
     highlight: config.highlight
   });
-  var html = marked.parser(tokens);
   async.series(_.map(markdownCallbacks, function(callback) {
     return function(next) {
       callback(html, function(modifiedHTML) {
