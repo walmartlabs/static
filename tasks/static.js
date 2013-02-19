@@ -5,10 +5,9 @@ module.exports = function(grunt) {
       async = require('async'),
       _ = require('underscore');
 
-  grunt.registerTask('static', "Process files with static", function() {
+  grunt.registerMultiTask('static', "Process files with static", function() {
     var done = this.async();
-    this.requiresConfig('static');
-    var config = grunt.config('static');
+    var config = this.data;
     if (config.require) {
       var deps = typeof config.require === 'string' ? [config.require] : config.require;
       _.each(deps, function(dep) {
@@ -21,10 +20,10 @@ module.exports = function(grunt) {
             output = '';
         async.series(sources.map(function(source) {
           return function(next) {
-            static.transform(source, function(buffer) {
+            static.transform(typeof source === 'object' ? source.file : source, function(buffer) {
               output += buffer.toString();
               next();
-            });
+            }, typeof source === 'object' ? source.context: undefined);
           }
         }), function() {
           console.log('grunt.static: wrote ' + target);
