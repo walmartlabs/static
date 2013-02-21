@@ -1,6 +1,6 @@
 {
   "name": "static",
-  "version": "2.0.0b1",
+  "version": "1.0.0",
   "dependencies": {
   	"handlebars": "~1.0",
   	"marked": "0.2.7",
