@@ -1,12 +1,11 @@
 var handlebars = require('handlebars'),
   async = require('async'),
-  jsdom = require('jsdom'),
+  cheerio = require('cheerio'),
   marked = require('marked'),
   path = require('path'),
   fs = require('fs'),
   _ = require('underscore'),
-  highlight = require('highlight.js'),
-  domToHTML = require('./lib/domtohtml.js').domToHtml;
+  highlight = require('highlight.js');
 
 var config = {
   addIdsToHeadings: true,
@@ -78,22 +77,13 @@ addTransform('hbs', function(buffer, complete, context, data) {
 });
 
 function $(html, callback) {
-  jsdom.env(html.toString(), [
-    jqueryPath
-  ], function(errors, window) {
-    if (errors) {
-      console.log('$ error', errors);
-      throw errors;
-    } else {
-      callback(window);
-    }
-  });
+  callback(cheerio.load(html));
 }
 
 function modifyDocumentFragment(html, callback, next) {
-  $(html, function(window) {
-    callback(window);
-    next(removeOuterBodyTag(domToHTML(window.document.body, true)));
+  $(html, function($) {
+    callback($);
+    next($.html());
   });
 }
 
@@ -126,9 +116,14 @@ handlebars.registerAsyncHelper('include', function(file, options, callback) {
   transform(filePath, function(fileData) {
     var selector = options.hash.select;
     if (selector) {
-      $(fileData.toString(), function(window) {
+      $(fileData.toString(), function($) {
         var generatedHTML = '';
-        window.$(selector).each(function() {
+        $(selector).each(function() {
+          // make more like a regular dom object
+          this.attributes = this[0].attribs;
+          this.id = this[0].attribs.id;
+          this.tagName = this[0].name;
+          this.innerHTML = this.html();
           generatedHTML += options.fn(this);
         });
         callback(generatedHTML);
@@ -165,9 +160,9 @@ function onMarkdown(callback) {
 
 onMarkdown(function(html, next) {
   if (config.addIdsToHeadings) {
-    modifyDocumentFragment(html, function(window) {
+    modifyDocumentFragment(html, function($) {
       if (config.addIdsToHeadings) {
-        addIdsToHeadings(window);
+        addIdsToHeadings($);
       }
     }, next);
   } else {
@@ -175,8 +170,7 @@ onMarkdown(function(html, next) {
   }
 });
 
-function addIdsToHeadings(window) {
-  var $ = window.$;
+function addIdsToHeadings($) {
   $('h1,h2,h3,h4,h5,h6').each(function() {
     var text = $(this).html().split('<').shift();
     var id = text.replace(/(^\s+|\s+$)/g, '').replace(/[\s]+/g, '-').replace(/([a-z])([A-Z])/g, function() {

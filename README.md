@@ -107,9 +107,9 @@ Just like `Handlebars.registerHelper` but async. `callback` recieves arguments t
 
     static.handlebars.registerAsyncHelper('toc', function(options, callback) {
       static.transform('README.md', function(html) {
-        static.$(html, function(window) {
+        static.$(html, function($) {
           var output = '<ul>';
-          window.$('h3', function() {
+          $('h3', function() {
             output += '<li>' + this.innerHTML + '</li>'
           });
           callback(output + '</ul>');
@@ -119,19 +119,19 @@ Just like `Handlebars.registerHelper` but async. `callback` recieves arguments t
 
 ### $ *static.$(html, callback)* 
 
-Create a DOM window and jQuery object from the specified HTML. `callback` recieves `window` with jQuery initialized. The `select` argument to `include` is implemented with this.
+Create a DOM window and jQuery object from the specified HTML. `callback` recieves a `$` cherrio instance. The `select` argument to `include` is implemented with this.
 
 
-    static.$(html, function(window) {
-      window.$('a').each(...);
+    static.$(html, function($) {
+      $('a').each(...);
     });
 
 ### modifyDocumentFragment *static.modifyDocumentFragment(html, callback, next)*
 
-Similar to `$`, calls `callback` with a `window` object initialized with jQuery. The `window` can be modified within the callback. `next` will be called with the resulting HTML.
+Similar to `$`, calls `callback` with a `$` cherrio instance. `$` can be modified within the callback. `next` will be called with the resulting HTML.
 
-    static.modifyDocumentFragment('<ul></ul>', function(window) {
-      window.$('ul').append('<li></li>');
+    static.modifyDocumentFragment('<ul></ul>', function($) {
+      $('ul').append('<li></li>');
     }, function(html) {
       // html === '<ul><li></li></ul>'
     });
