@@ -16,11 +16,12 @@ module.exports = function(grunt) {
     }
     async.series(_.map(config.build, function(source, target) {
       return function(complete) {
-        var sources = typeof source === 'string' ? [source] : source,
-            output = '';
-        async.series(sources.map(function(source) {
+        var sourceData = source.file ? source.file : source,
+            sources = typeof sourceData === 'string' ? [sourceData] : sourceData,
+            output = ''
+        async.series(sources.map(function(sourceFile) {
           return function(next) {
-            static.transform(typeof source === 'object' ? source.file : source, function(buffer) {
+            static.transform(sourceFile, function(buffer) {
               output += buffer.toString();
               next();
             }, typeof source === 'object' ? source.context: undefined);
